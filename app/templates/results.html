@@ -1,0 +1,10 @@
+<html>
+    <head>
+        <title>Search results</title>
+    </head>
+    <body>
+        {% for s in songs %}
+            <p>This song is {{ s.title }} on page {{ s.page }}{{ s.position }}.</p>
+        {% endfor %}
+    </body>
+</html>
