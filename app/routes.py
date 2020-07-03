@@ -1,4 +1,5 @@
 from flask import render_template, redirect, request, url_for
+from sqlalchemy import and_
 from app import app
 from app.models import Song
 from .forms import SearchForm
@@ -26,7 +27,13 @@ def search():
     return render_template('search.html', form=form)
 
 
-@app.route('/search_results/<query>')
-def search_results(query):
-    songs = Song.query.filter_by(id=query).all()
+@app.route('/search_results')
+def search_results():
+    filters = []
+    for k in request.args:
+        column = getattr(Song, k)
+        comparison_string = '%{}%'.format(request.args[k])
+        filters.append(column.like(comparison_string))
+
+    songs = Song.query.filter(and_(*filters))
     return render_template('results.html', songs=songs)
