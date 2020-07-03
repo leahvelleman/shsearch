@@ -5,7 +5,7 @@ Search the 1991 Sacred Harp for things you remember when you've forgotten the wo
 # Installation
 
 For installation, the backend requires Python 3.8, a current version of Pip, SQLite, and an internet connection. 
-The installation commands will download the remaining dependencies, 
+The installation commands will download the remaining dependencies.
 
 Clone the repository.
 ```
