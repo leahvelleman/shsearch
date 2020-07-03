@@ -1,5 +1,6 @@
 from app import db
 
+
 class Song(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String)
@@ -10,5 +11,6 @@ class Song(db.Model):
     three_liner = db.Column(db.Integer)
 
     def __repr__(self):
-        return '<Song {} {}>'.format(self.page + self.position, self.title)
-
+        return '<Song {} {}>'.format(
+                str(self.page) + str(self.position or ""),
+                str(self.title))
