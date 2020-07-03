@@ -28,5 +28,5 @@ def search():
 
 @app.route('/search_results/<query>')
 def search_results(query):
-    songs = Song.query.filter_by(id = query).all()
+    songs = Song.query.filter_by(id=query).all()
     return render_template('results.html', songs=songs)
