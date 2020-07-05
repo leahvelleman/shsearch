@@ -1,12 +1,11 @@
 <html>
     <head>
-        Oooooh a search form
+        <title>Search results</title>
     </head>
     <body>
-        <form action="" method="post" name="search">
-            {{ form.csrf_token }}
-            {{ form.search_string(size=80) }}
-            <input type="submit" value="Search">
-        </form>
+        {% include 'header.html' %}
+        {% for s in songs %}
+            <p>This song is {{ s.title }} on page {{ s.page }}{{ s.position }}.</p>
+        {% endfor %}
     </body>
 </html>
