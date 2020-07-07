@@ -1,5 +1,4 @@
 from flask import render_template, redirect, request, url_for, flash
-from werkzeug.exceptions import HTTPException
 from sqlalchemy import and_
 from app import app, db
 from app.models import Song
@@ -20,13 +19,17 @@ def index():
     if form.validate_on_submit():
         return redirect(url_for(
                             endpoint='search',
-                            query=form.search_string.data))
+                            song_text=form.search_string.data))
     return render_template('index.html', form=form)
 
 
-@app.route('/search')
+@app.route('/search', methods=('GET', 'POST'))
 def search():
     form = SearchForm(request.form)
+    if form.validate_on_submit():
+        return redirect(url_for(
+                            endpoint='search',
+                            song_text=form.search_string.data))
 
     filters = []
     for k in request.args:
