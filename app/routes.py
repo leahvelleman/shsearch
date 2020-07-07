@@ -38,3 +38,8 @@ def search():
     songs = Song.query.filter(and_(*filters))
 
     return render_template('search.html', songs=songs, form=form)
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
