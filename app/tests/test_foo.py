@@ -25,6 +25,14 @@ def test_useful_404_page():
         assert url_for('index') in str(rv.data)
 
 
+def test_500_page():
+    with app.test_client() as client:
+        rv = client.get('/fuck')
+        assert rv.status_code == 500
+        assert rv.data
+        assert url_for('index') in str(rv.data)
+
+
 def test_song_get():
     s = Song.query.get(1)
     assert s

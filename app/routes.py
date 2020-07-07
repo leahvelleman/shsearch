@@ -1,6 +1,7 @@
 from flask import render_template, redirect, request, url_for, flash
+from werkzeug.exceptions import HTTPException
 from sqlalchemy import and_
-from app import app
+from app import app, db
 from app.models import Song
 from .forms import SearchForm
 
@@ -40,6 +41,21 @@ def search():
     return render_template('search.html', songs=songs, form=form)
 
 
+@app.route('/fuck')
+def throw_an_error():
+    # Some tests in test_foo.py currently depend on this. Remove it when we
+    # are doing proper mocking or something
+    assert False
+
+
+@app.errorhandler(500)
+def handle_500(e):
+    # Currently unnecessary because we're not changing the DB in any routes,
+    # but let's have it in there anyway
+    db.session.rollback()
+    return render_template('500.html', e=e), 500
+
+
 @app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
+def handle_404(e):
+    return render_template('404.html', e=e), 404
