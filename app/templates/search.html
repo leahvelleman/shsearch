@@ -1,11 +1,19 @@
-<html>
-    <head>
-        <title>Search results</title>
-    </head>
-    <body>
-        {% include 'header.html' %}
-        {% for s in songs %}
-            <p>This song is {{ s.title }} on page {{ s.page }}{{ s.position }}.</p>
-        {% endfor %}
-    </body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+    {% include 'header.html' %}
+    {% for s in songs %}
+    <div class="card my-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ s.page }}{{ s.position }} {{ s.title }}</h5>
+            <h6 class="card-subtitle mb-2">
+                <a class="text-muted" href="search?meter_name={{ s.meter_name }}">
+                    {{ s.meter_name }}
+                </a>
+            </h6>
+            <p class="card-text">
+            {{ s.song_text | truncate(50)  }}
+            </p>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}

@@ -1,15 +1,21 @@
-<h1>Sacred Harp Search</h1>
-<form action="" method="post" name="search">
-    {{ form.csrf_token }}
-    {{ form.search_string(size=80) }}
-    <input type="submit" value="Search">
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul class="AttributeError">
+<div class="well">
+    <h1>
+        <a href="index.html"><span class="text-muted">Sacred Harp</span> Search</a>
+    </h1>
+    <form action="" method="post" name="search">
+        {{ form.csrf_token }}
+        {{ form.search_string(class_="form-control") }}
+        <input type="submit" class="btn btn-primary" value="Search">
+    </form>
+</div>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="well">
             {% for message in messages %}
-                <li>{{ message }}</li>
+                <div class="controls">
+                    <span class="help-inline">{{ message }}</span>
+                </div>
             {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-</form>
+        </div>
+    {% endif %}
+{% endwith %}
