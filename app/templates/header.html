@@ -4,18 +4,30 @@
     </h1>
     <form action="" method="post" name="search">
         {{ form.csrf_token }}
-        {{ form.search_string(class_="form-control") }}
+        <div class="form-group">
+            {{ form.search_string(class_="form-control", value=args["song_text"]) }}
+        </div>
+        {% if args %}
+        <div class="form-group">
+            {% for k in args %}
+                {% if k != "song_text" %}
+                    <button class="btn btn-light btn-sm">{{ args[k] }} &times;</button>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
         <input type="submit" class="btn btn-primary" value="Search">
     </form>
 </div>
+
 {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <div class="well">
-            {% for message in messages %}
-                <div class="controls">
-                    <span class="help-inline">{{ message }}</span>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
+{% if messages %}
+<div class="well">
+{% for message in messages %}
+    <div class="controls">
+        <span class="help-inline">{{ message }}</span>
+    </div>
+{% endfor %}
+</div>
+{% endif %}
 {% endwith %}

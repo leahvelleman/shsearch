@@ -30,18 +30,26 @@ def search():
         return redirect(url_for(
                             endpoint='search',
                             song_text=form.search_string.data))
-
-    filters = []
-    for k in request.args:
+    query_terms = []
+    args = request.args
+    for k in args:
         try:
-            column = getattr(Song, k)
-            comparison_string = '%{}%'.format(request.args[k])
-            filters.append(column.like(comparison_string))
+            value = args[k]
+            query_terms.append(make_query_term(k, value))
         except AttributeError:
             flash("Not a valid search term: {}".format(k))
-    songs = Song.query.filter(and_(*filters))
+    songs = Song.query.filter(and_(*query_terms))
+    return render_template('search.html', songs=songs, form=form,
+                           args=args)
 
-    return render_template('search.html', songs=songs, form=form)
+
+def make_query_term(k, value):
+    column = getattr(Song, k)
+    if k == "song_text":
+        comparison_string = '%{}%'.format(value)
+        return column.like(comparison_string)
+    else:
+        return column == value
 
 
 @app.route('/fuck')
