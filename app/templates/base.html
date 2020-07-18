@@ -10,12 +10,16 @@
     </head>
     <body>
         <div class="container">
+            {% include 'header.html' %}
             <div class="row">
-                <div class="col-md-auto">
-                <div class="col-md">
+            <div class="col-sm-auto">
+                {% block left %}{% endblock %}
+            </div>
+            <div class="row">
+                <div class="col-sm">
                     {% block content %}{% endblock %}
                 </div>
-                <div class="col-md-auto">
+            </div>
             </div>
         </div>
     </body>

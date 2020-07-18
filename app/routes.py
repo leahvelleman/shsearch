@@ -1,5 +1,6 @@
+from collections import Counter
 from flask import render_template, redirect, request, url_for, flash
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 from app import app, db
 from app.models import Song
 from .forms import SearchForm
@@ -30,26 +31,37 @@ def search():
         return redirect(url_for(
                             endpoint='search',
                             song_text=form.search_string.data))
-    query_terms = []
     args = request.args
-    for k in args:
-        try:
-            value = args[k]
-            query_terms.append(make_query_term(k, value))
-        except AttributeError:
-            flash("Not a valid search term: {}".format(k))
-    songs = Song.query.filter(and_(*query_terms))
+    songs = search_songs(args)
+    facetnames = ["meter_name", "page", "position"]
+    facets = {f: Counter(getattr(s, f) for s in songs) for f in facetnames}
+    meters = set(s.meter_name for s in songs)
     return render_template('search.html', songs=songs, form=form,
-                           args=args)
+            args=args, facets=facets, request=request)
 
 
-def make_query_term(k, value):
+def search_songs(args):
+    query_terms = []
+    if args:
+        for k in args:
+            try:
+                vs = args.getlist(k)
+                query_terms.append(make_query_term(k, vs))
+            except AttributeError:
+                flash("Not a valid search term: {}".format(k))
+    if query_terms:
+        songs = Song.query.filter(and_(*query_terms))
+    else:
+        songs = Song.query.all()
+    return songs
+
+
+def make_query_term(k, vs):
     column = getattr(Song, k)
     if k == "song_text":
-        comparison_string = '%{}%'.format(value)
-        return column.like(comparison_string)
+        return or_(*[column.like('%{}%'.format(v)) for v in vs])
     else:
-        return column == value
+        return or_(*[column == v for v in vs])
 
 
 @app.route('/fuck')

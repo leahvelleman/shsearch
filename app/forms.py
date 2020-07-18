@@ -3,4 +3,4 @@ from wtforms import StringField
 
 
 class SearchForm(FlaskForm):
-    search_string = StringField('search_string')
+    song_text = StringField('song_text')

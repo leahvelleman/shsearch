@@ -1,22 +1,36 @@
 <div class="well">
-    <h1>
+    <h1 class="display-4">
         <a href="index.html"><span class="text-muted">Sacred Harp</span> Search</a>
     </h1>
-    <form action="" method="post" name="search">
-        {{ form.csrf_token }}
-        <div class="form-group">
-            {{ form.search_string(class_="form-control", value=args["song_text"]) }}
+    <form action="/search" method="get" name="search">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <input type="submit" class="btn btn-primary" value="Search">
+            </div>
+            <input type="text" id="song_text" name="song_text"
+                                              class="form-control"
+                                              value="{{args['song_text']}}">
         </div>
         {% if args %}
-        <div class="form-group">
+        <div class="input-group mb-3">
             {% for k in args %}
                 {% if k != "song_text" %}
-                    <button class="btn btn-light btn-sm">{{ args[k] }} &times;</button>
+                    {% for v in args.getlist(k) %}
+                        <button onclick="this.remove(); submit()" 
+                            class="badge badge-secondary border border-secondary
+                            btn-light mr-1">
+                            <input type="hidden" 
+                                   id="{{k}}"
+                                   name="{{k}}" 
+                                   value="{{v}}" 
+                                   readonly>
+                            {{v}} &times;
+                        </button>
+                    {% endfor %}
                 {% endif %}
             {% endfor %}
         </div>
         {% endif %}
-        <input type="submit" class="btn btn-primary" value="Search">
     </form>
 </div>
 

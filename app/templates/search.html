@@ -1,17 +1,51 @@
 {% extends 'base.html' %}
-{% block content %}
-    {% include 'header.html' %}
-    {% for s in songs %}
-    <div class="card my-3">
+{% block left %}
+    <div class="card">
         <div class="card-body">
-            <h5 class="card-title">{{ s.page }}{{ s.position }} {{ s.title }}</h5>
+            <h5 class="card-title">Filter by...</h5>
+            {% for f in facets %}
+            <h5 class="mt-3 font-weight-light">{{f}}</h5>
+            <ul class="list-unstyled mb-0 pb-0">
+            {% for v, count in facets[f].most_common(3) %}
+                <li>
+                    <a href="{{request.url ~ '&' ~ f ~ '=' ~ v}}" class="badge badge-light border">{{v}} +</a> 
+                    <small class="font-weight-lighter">({{count}})</small>
+                </li>
+            {% endfor %}
+            </ul>
+            {% if facets[f] | length > 5 %}
+                <ul class="list-unstyled collapse mb-0 pb-0" id="{{f}}collapse">
+                {% for v, count in facets[f].most_common()[3:] %}
+                    <li>
+                        <a href="{{request.url ~ '&' ~ f ~ '=' ~ v}}" class="badge badge-light border">{{v}} +</a> 
+                        <small class="font-weight-lighter">({{count}})</small>
+                    </li>
+                {% endfor %}
+                </ul>
+                <div class="pt-1 text-right">
+                    <a href="#{{f}}collapse" data-toggle="collapse" 
+                                             class="font-weight-light"
+                                             aria-expanded="False"
+                                             aria-controls="{{f}}collapse">
+                        {{facets[f] | length - 5 }} more {{f}}s</a>
+                </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    {% for s in songs %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title text-primary">{{ s.page }}{{ s.position }} {{ s.title }}</h5>
             <h6 class="card-subtitle mb-2">
                 <a class="text-muted" href="search?meter_name={{ s.meter_name }}">
                     {{ s.meter_name }}
                 </a>
             </h6>
             <p class="card-text">
-            {{ s.song_text | truncate(50)  }}
+            {{ s.song_text | string | truncate(50)  }}
             </p>
         </div>
     </div>
