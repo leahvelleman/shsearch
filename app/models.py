@@ -1,6 +1,6 @@
-from app import db
+from app import app, db, whooshee
 
-
+@whooshee.register_model('title', 'song_text')
 class Song(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String)
@@ -14,3 +14,4 @@ class Song(db.Model):
         return '<Song {} {}>'.format(
                 str(self.page) + str(self.position or ""),
                 str(self.title))
+

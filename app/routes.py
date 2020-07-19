@@ -32,36 +32,36 @@ def search():
                             endpoint='search',
                             song_text=form.search_string.data))
     args = request.args
-    songs = search_songs(args)
-    facetnames = ["meter_name", "page", "position"]
-    facets = {f: Counter(getattr(s, f) for s in songs) for f in facetnames}
-    meters = set(s.meter_name for s in songs)
+    # TODO:
+    # Handle empty string better
+    # Redirect to resolve multiple
+    # q strings
+    query = " ".join(args.getlist('q')) or "God"
+
+    facet_names = ["meter_name", "page", "position"]
+    filters = {f: args.getlist(f) for f in facet_names}
+    filter_query = get_filter_query(filters)
+
+    songs = Song.query.whooshee_search(query).filter(filter_query)
+
+    facets = {f: Counter(getattr(s, f) for s in songs) for f in facet_names}
+
     return render_template('search.html', songs=songs, form=form,
-            args=args, facets=facets, request=request)
+                           query=query, facets=facets, filters=filters,
+                           request=request)
 
 
-def search_songs(args):
+def get_filter_query(filters):
     query_terms = []
-    if args:
-        for k in args:
-            try:
-                vs = args.getlist(k)
-                query_terms.append(make_query_term(k, vs))
-            except AttributeError:
-                flash("Not a valid search term: {}".format(k))
-    if query_terms:
-        songs = Song.query.filter(and_(*query_terms))
-    else:
-        songs = Song.query.all()
-    return songs
+    for f in filters:
+        vs = filters[f]
+        query_terms.append(make_query_term(f, vs))
+    return and_(*query_terms)
 
 
 def make_query_term(k, vs):
     column = getattr(Song, k)
-    if k == "song_text":
-        return or_(*[column.like('%{}%'.format(v)) for v in vs])
-    else:
-        return or_(*[column == v for v in vs])
+    return or_(*[column == v for v in vs])
 
 
 @app.route('/fuck')
