@@ -6,20 +6,44 @@
         <script src="http://code.jquery.com/jquery-latest.js"></script>
         <script src="/static/js/bootstrap.min.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+.toggle[aria-expanded="false"]:before {
+    content: "\25B6";
+    margin-left: -1rem;
+    width: 1rem;
+}
+.toggle[aria-expanded="true"]:before {
+    content: "\25BC";
+    margin-left: -1rem;
+    width: 1rem;
+    color: #007bff !important;
+}
+.toggle:hover {
+    color: #007bff !important;
+}
+
+
+/*for the animation*/
+.dropdown-toggle:after {
+  transition: 0.5s;
+}
+        </style>
+
         <title>Sacred Harp Search</title>
     </head>
     <body>
         <div class="container">
-            {% include 'header.html' %}
             <div class="row">
-            <div class="col-sm-auto">
-                {% block left %}{% endblock %}
-            </div>
-            <div class="row">
-                <div class="col-sm">
-                    {% block content %}{% endblock %}
+                <div class="col-9">
+                    {% include 'header.html' %}
+                    <div class="row">
+                    <div class="col-sm-4">
+                        {% block left %}{% endblock %}
+                    </div>
+                    <div class="col-sm-8">
+                        {% block content %}{% endblock %}
+                    </div>
                 </div>
-            </div>
             </div>
         </div>
     </body>
