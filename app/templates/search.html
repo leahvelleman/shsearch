@@ -1,69 +1,33 @@
 {% extends 'base.html' %}
-{% block left %}
-    <div class="card border-0 bg-light">
-        <div class="card-body">
-            <h5 class="card-title">Filter by...</h5>
-            {% for f in facets %}
-            <h5 class="mt-3 font-weight-light">{{f}}</h5>
-            <ul class="list-unstyled mb-0 pb-0">
-            {% for v, count in facets[f].most_common(3) %}
-                <li>
-                    <a href="{{request.url ~ '&' ~ f ~ '=' ~ v}}" class="badge badge-light border">{{v}} +</a> 
-                    <small class="font-weight-lighter">({{count}})</small>
-                </li>
-            {% endfor %}
-            </ul>
-            {% if facets[f] | length > 5 %}
-                <ul class="list-unstyled collapse mb-0 pb-0" id="{{f}}collapse">
-                {% for v, count in facets[f].most_common()[3:] %}
-                    <li>
-                        <a href="{{request.url ~ '&' ~ f ~ '=' ~ v}}" class="badge badge-light border">{{v}} +</a> 
-                        <small class="font-weight-lighter">({{count}})</small>
-                    </li>
-                {% endfor %}
-                </ul>
-                <div class="pt-1 text-right">
-                    <a href="#{{f}}collapse" data-toggle="collapse" 
-                                             class="font-weight-light"
-                                             aria-expanded="False"
-                                             aria-controls="{{f}}collapse">
-                        {{facets[f] | length - 5 }} more {{f}}s</a>
-                </div>
-            {% endif %}
-            {% endfor %}
-        </div>
-    </div>
-{% endblock %}
 {% block content %}
-    {% for s in songs %}
-    <div class="card pl-2 border-0">
-        <div class="card-body">
-            <h5 class="card-title text-primary">
-                <a href="#x{{s.page}}{{s.position}}collapse" 
-                                         data-toggle="collapse" 
-                                         class="toggle stretched-link text-decoration-none text-white"
-                                         aria-expanded="false"
-                                         aria-controls="x{{s.page}}{{s.position}}collapse"></a><a href="{{request.url}}&amp;page={{s.page}}">{{ s.page}}</a><a href="{{request.url}}&amp;position={{s.position}}">{{ s.position }}</a>
-                {{ s.title }}.
-                <a class="font-weight-light text-muted" href="{{request.url}}&amp;meter_name={{s.meter_name}}">
-                    {{ s.meter_name }}.
-                </a>
-            </h5>
-            <p class="font-weight-light card-subtitle text-muted mb-2">
-                E major. 4/4. Isaac Watts. Daniel Reed.
-            </p>
-            <p class="card-text">
-            {% set lines = s.song_text.split("\n") %}
-            {{ lines[0] }}<br>
-            {{ lines[1] }}<br>
-            <span class="collapse" id="x{{s.page}}{{s.position}}collapse">
-                {% for line in lines[2:] %}
-                    {{line}}<br>
-                {% endfor %}
-                {{ s.three_liner }}
+{% for s in songs %}
+<div class="card mb-2">
+    <div class="card-body">
+        <div class="card-title h6 text-primary mb-2">
+            <a href=".multi-collapse{{s.page}}{{s.position}}" 
+                                     data-toggle="collapse" 
+                                     class="toggle stretched-link text-decoration-none text-white"
+                                     aria-expanded="false"
+                                     aria-controls="x{{s.page}}{{s.position}}collapse1
+                                                    x{{s.page}}{{s.position}}collapse2"></a><a href="{{request.url}}&amp;page={{s.page}}">{{ s.page}}</a><a href="{{request.url}}&amp;position={{s.position}}">{{ s.position }}</a>
+            {{ s.title }}
+            <span class="font-weight-light text-muted mb-2">
+                {{ s.meter_name }}
             </span>
-            </p>
+        </div>
+        <p class="collapse show multi-collapse{{s.page}}{{s.position}} mb-2"
+        id="x{{s.page}}{{s.position}}collapse1">
+        &ldquo;{{ cfh.highlight_hit(s, "song_text")|safe }}&rdquo;
+        </p>
+        {% set lines = wfh.highlight_hit(s, "song_text").split("\n") %}
+        <div class="collapse multi-collapse{{s.page}}{{s.position}} mb-2"
+            id="x{{s.page}}{{s.position}}collapse2">
+            {% for line in lines %}
+            {{line|safe}}<br>
+            {% endfor %}
+            {{ s.three_liner }}
         </div>
     </div>
-    {% endfor %}
+</div>
+{% endfor %}
 {% endblock %}

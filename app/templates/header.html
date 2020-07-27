@@ -11,24 +11,38 @@
                                               class="form-control"
                                               value="{{query}}">
         </div>
-        {% if filters %}
-        <div class="input-group mb-3">
-            {% for f in filters %}
-                {% for v in filters[f] %}
-                    <button onclick="this.remove(); submit()" 
-                        class="badge badge-secondary border border-secondary
-                        btn-light mr-1">
-                        <input type="hidden" 
-                               id="{{f}}"
-                               name="{{f}}" 
-                               value="{{v}}" 
-                               readonly>
-                        {{v}} &times;
-                    </button>
-                {% endfor %}
+        {% for f in facets %}
+        <p>
+            <b>{{f}}</b>
+            {% if f in request.args %}
+            {% for v in request.args.getlist(f) %}  
+            <button onclick="this.remove(); submit()" 
+                class="badge badge-secondary border border-secondary
+                btn-light mr-1">
+                <input type="hidden" 
+                       id="{{f}}"
+                       name="{{f}}" 
+                       value="{{v}}" 
+                       readonly>
+                {{v}} &times;
+            </button>
             {% endfor %}
-        </div>
-        {% endif %}
+            {% else %}
+            {% for v in songs.groups(f) %}
+            <button onclick="submit()"
+                    class="badge badge-light border"
+                    <input type="hidden"
+                           id="{{f}}"
+                           name="{{f}}"
+                           value="{{v}}"
+                           readonly>
+                    {{v}} +
+            </button>
+            <small class="font-weight-lighter">({{ songs.groups(f)[v] }})</small>
+            {% endfor %}
+            {% endif %}
+        </p>
+        {% endfor %}
     </form>
 </div>
 
