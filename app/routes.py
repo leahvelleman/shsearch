@@ -36,6 +36,11 @@ def index():
     return render_template('index.html', form=form)
 
 
+@app.route('/about.html', methods=('GET', 'POST'))
+def about():
+    return render_template('about.html')
+
+
 @app.route('/search', methods=('GET', 'POST'))
 def search():
     query_terms = SearchTerms(request.query_string.decode('utf-8'))
