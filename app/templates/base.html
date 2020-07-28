@@ -38,19 +38,24 @@
         <title>Sacred Harp Search</title>
     </head>
     <body>
-<nav class="navbar navbar-light bg-light">
-    <h1 class="navbar-brand">Sacred harp search</h1>
-    </nav>
+    <nav class="navbar navbar-light bg-light">
         <div class="container">
-            <div class="row">
-                <div class="col-9">
-                    <div class="row">
-                    <div class="col-sm-4">
-                        {% block left %}{% endblock %}
-                    </div>
-                    <div class="col-sm-8">
-                        {% block content %}{% endblock %}
-                    </div>
+            <span class="navbar-brand">Sacred harp search</span>
+            <span class="mr-auto">
+                <a href="#">Github</a>
+                <a href="about.html">About</a>
+                <a href="help.html">Help</a>
+            </span>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+                <div class="row">
+                <div class="col-sm-4">
+                    {% block left %}{% endblock %}
+                </div>
+                <div class="col-sm-8">
+                    {% block content %}{% endblock %}
                 </div>
             </div>
         </div>
