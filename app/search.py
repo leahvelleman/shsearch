@@ -4,7 +4,7 @@ from whoosh.analysis import StemmingAnalyzer
 from whoosh.fields import Schema, TEXT, KEYWORD, NUMERIC
 from whoosh.highlight import Highlighter, WholeFragmenter, ContextFragmenter
 from whoosh.qparser import MultifieldParser
-from whoosh.query import Term, Or, And
+from whoosh.query import Term, Or, And, Every
 from whoosh.sorting import Count
 from whoosh import index as _index
 
@@ -59,7 +59,7 @@ class SearchTerms(defaultdict):
         return obj
 
     def whoosh_query(self):
-        queries = []
+        queries = [Every()]  # An empty query gets everything
         for k in self:
             if self[k]:
                 if k in self.disjunctive:
