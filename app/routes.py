@@ -2,6 +2,7 @@ from collections import Counter
 from flask import render_template, redirect, request, url_for
 from app import app
 from .forms import SearchForm
+from .search import SearchTerms
 
 from whoosh.fields import Schema, TEXT, KEYWORD, NUMERIC
 from whoosh.query import Term, Or, And
@@ -37,33 +38,22 @@ def index():
 
 @app.route('/search', methods=('GET', 'POST'))
 def search():
-    form = SearchForm(request.form)
-    if form.validate_on_submit():
-        return redirect(url_for(
-                            endpoint='search',
-                            song_text=form.search_string.data))
-    args = request.args
-    query_string = " ".join(args.getlist('q')) or ""
-    queries = [qp.parse(query_string)]
+    query_terms = SearchTerms(request.query_string.decode('utf-8'))
+
+    if 'scope' in query_terms:
+        query_terms.handle_scope()
+        return redirect(url_for(endpoint='search') + "?" + str(query_terms))
+
     facets = ["meter_name", "page", "position"]
-    for k in facets:
-        if k in request.args:
-            queries.append(Or([Term(k, v) for v in args.getlist(k)]))
-    query = And(queries)
-
     with ix.searcher() as s:
-        songs = s.search(query, groupedby=facets, maptype=Count)
-        return render_template('search.html', songs=songs, wfh=wfh, cfh=cfh,
-                               form=form, query=query_string, facets=facets,
-                               request=request,
-                               lexicon=ix.reader().lexicon("meter_name"))
-
-
-@app.route('/fuck')
-def throw_an_error():
-    # Some tests in test_foo.py currently depend on this. Remove it when we
-    # are doing proper mocking or something
-    assert False
+        query_terms.clean_with(s)
+        print(repr(query_terms.whoosh_query()))
+        songs = s.search(query_terms.whoosh_query(),
+                         groupedby=facets,
+                         maptype=Count)
+        print(songs)
+        return render_template('search.html', songs=songs, facets=facets,
+                search_terms=query_terms, cfh=cfh, wfh=wfh)
 
 
 @app.errorhandler(500)

@@ -10,7 +10,7 @@ import whoosh.index as index
 schema = Schema(title=TEXT(stored=True),
         meter_name=KEYWORD(commas=True, stored=True),
                 song_text=TEXT(analyzer=StemmingAnalyzer(), stored=True),
-                page=NUMERIC(stored=True),
+                page=TEXT(stored=True),
                 position=KEYWORD(stored=True))
 
 
