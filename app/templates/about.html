@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
 {% block left %}
-<div class="col mt-3">
-        <h5>About the Sacred Harp</h5>
+<div class="card mt-3 border-0">
+    <div class="card-body pt-3 ml-0 pl-0">
+        <h5>What is this?</h5>
         <p>
-            The Sacred Harp is a book. We sing out of it. But sometimes we
-            forget what page something is on.
+            A search engine for the 1991 edition of the Sacred Harp! Other sites
+            let you look a song up by words or title. But when all you can remember
+            is "it's on a bottom-right page and it's got a birdseye in it," this one
+            can help.
         </p>
         <h5>Try it!</h5>
         <p>
@@ -30,8 +33,10 @@
             for technical advice, to the Brainfriends for user testing,
             and to Margaret Youngberg for library science.
         </p>
+    </div>
 </div>
 {% endblock %}
 {% block content %}
 {% include 'search_field.html' %}
+{% include 'search_results.html' %}
 {% endblock %}

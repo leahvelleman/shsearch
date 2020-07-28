@@ -1,9 +1,13 @@
     <div class="card my-3">
         <div class="card-header">
-            <span class="h5">Your search</span>
+            <span class="h5">{% if search_terms %}
+                             Your search
+                             {% else %}
+                             Search
+                             {% endif %}</span>
         </div>
         <div class="card-body">
-            <form action="/search" method="get" name="search" class="mt-3">
+            <form action="/search" method="get" name="search">
             {% if search_terms %}
             Searching within…
             <a href="search"
@@ -11,7 +15,7 @@
             {% for term in search_terms %}
             {% if term in search_terms.disjunctive %}
             <div class="row ml-3 mt-2">
-                <div class="col-md-3 text-secondary">{{ term }}</div>
+                <div class="col-md-3">{{ term }}</div>
                 {% set or = joiner(" or ") %}
                 <div class="col-md-9">
                     {% for value in search_terms[term] %}
@@ -23,7 +27,7 @@
             </div>
             {% else %}
             <div class="row ml-3 mt-2">
-                <div class="col-md-3 text-secondary">{{ term }}</div>
+                <div class="col-md-3">{{ term }}</div>
                 <div class="col-md-9">
                     {% for value in search_terms[term] %}
                     <div class="row">
@@ -36,7 +40,7 @@
             {% endif %}
             {% endfor %}
             {% endif %}
-                <div class="input-group">
+                <div class="input-group mt-3">
                     <div class="input-group-prepend">
                         <button type="submit" 
                                 class="btn btn-primary" 
