@@ -1,10 +1,18 @@
 {% extends 'base.html' %}
 {% block left %}
-<div class="col mt-3">
-        <h5>About the Sacred Harp</h5>
+<div class="card mt-3 border-0">
+    <div class="card-body pt-3 ml-0 pl-0">
+        <h5>What is this?</h5>
         <p>
-            The Sacred Harp is a book. We sing out of it. But sometimes we
-            forget what page something is on.
+            The Sacred Harp is a 19th-Century hymnal that thousands of people
+            around the world still sing from. 
+        </p>
+        <p>
+            When you're singing with friends, it's easy to have a song in mind
+            but forget which page it's on. Sometimes you can look it up by title.
+            Sometimes all you remember is "it's in a minor key on a right-hand page
+            and it has the word 'eye' in it." This search engine is for situations like
+            that.
         </p>
         <h5>Try it!</h5>
         <p>
@@ -30,8 +38,10 @@
             for technical advice, to the Brainfriends for user testing,
             and to Margaret Youngberg for library science.
         </p>
+    </div>
 </div>
 {% endblock %}
 {% block content %}
 {% include 'search_field.html' %}
+{% include 'search_results.html' %}
 {% endblock %}
