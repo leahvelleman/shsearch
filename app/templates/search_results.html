@@ -1,4 +1,4 @@
-<h5 class="ml-3">Results {{1}}–{{ songs|length }}</h5>
+<h5 class="ml-3">{% if search_terms %}Results {{1}}–{{ songs|length }}{% else %}All 554 songs{% endif %}</h5>
 {% for s in songs %}
 <div class="card border-0 ">
     <div class="card-body">

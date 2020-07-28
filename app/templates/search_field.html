@@ -1,17 +1,19 @@
-    <div class="card my-3">
+    <div class="card my-3 {% if search_terms %} {% else %} border-0 {% endif %}">
+        {% if search_terms %}
         <div class="card-header">
-            <span class="h5">{% if search_terms %}
-                             Your search
-                             {% else %}
-                             Search
-                             {% endif %}</span>
+            <span class="h5">Your search</span>
         </div>
+        {% else %}
+        <div class="card-header border-0 bg-white">
+            <span class="h4">Search</span>
+        </div>
+        {% endif %}
         <div class="card-body">
             <form action="/search" method="get" name="search">
             {% if search_terms %}
             Searching within…
             <a href="search"
-                class="float-right btn btn-danger btn-sm">Clear</a>
+                class="float-right btn btn-outline-danger btn-sm">Clear</a>
             {% for term in search_terms %}
             {% if term in search_terms.disjunctive %}
             <div class="row ml-3 mt-2">
@@ -40,7 +42,7 @@
             {% endif %}
             {% endfor %}
             {% endif %}
-                <div class="input-group mt-3">
+                <div class="input-group">
                     <div class="input-group-prepend">
                         <button type="submit" 
                                 class="btn btn-primary" 
@@ -55,7 +57,7 @@
                            placeholder="{% if search_terms -%}
                                         Search within these results for...
                                         {%- else -%}
-                                        Search all 553 songs for...
+                                        Search all 554 songs for...
                                         {%- endif %}" 
                            value="{{query}}">
                     <div class="input-group-append">
