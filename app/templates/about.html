@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block left %}
+<div class="col mt-3">
+        <h5>About the Sacred Harp</h5>
+        <p>
+            The Sacred Harp is a book. We sing out of it. But sometimes we
+            forget what page something is on.
+        </p>
+        <h5>Try it!</h5>
+        <p>
+            Try a search! Here are some of the things you can do. Click the
+            question marks for more information.
+        </p>
+        <p>
+        <tt>corn in valleys birdseye</tt> <a href="TODO">?</a><br>
+        <tt>47b</tt> <a href="TODO">?</a><br>
+        <tt>"and breathe"</tt> <a href="TODO">?</a><br>
+        <tt>"so la la la so la la la la fa fa so so la"</tt> <a href="TODO">?</a>
+        <p>
+            Or <a href="TODO">explore</a> songs by key, meter, age, length, etc.
+        </p>
+        <h5>About this app</h5>
+        <p>
+        This is a thing. I made it. It's an example of <a href="TODO">faceted search</a>.
+        When the documents you're searching are very similar, like songs in the same book,
+        you can customize the facets very closely.
+        </p>
+        <p>
+        Thanks to Lael Birch and Savanni D'Gerinel
+            for technical advice, to the Brainfriends for user testing,
+            and to Margaret Youngberg for library science.
+        </p>
+</div>
+{% endblock %}
+{% block content %}
+{% include 'search_field.html' %}
+{% endblock %}

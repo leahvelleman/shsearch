@@ -1,16 +1,28 @@
 from collections import Counter
-from flask import render_template, redirect, request, url_for, flash
-from sqlalchemy import and_, or_
-from app import app, db
-from app.models import Song
+from flask import render_template, redirect, request, url_for
+from app import app
 from .forms import SearchForm
+from .search import SearchTerms
 
+from whoosh.fields import Schema, TEXT, KEYWORD, NUMERIC
+from whoosh.query import Term, Or, And
+from whoosh.analysis import StemmingAnalyzer
+from whoosh.highlight import Highlighter, WholeFragmenter, ContextFragmenter
+from whoosh.qparser import MultifieldParser
+from whoosh.sorting import Count
+from whoosh import index as _index
 
-@app.route('/songs/')
-def songs():
-    form = SearchForm(request.form)
-    songs = Song.query.all()
-    return render_template('search.html', songs=songs, form=form)
+schema = Schema(title=TEXT(stored=True),
+                meter_name=KEYWORD(commas=True, stored=True),
+                song_text=TEXT(analyzer=StemmingAnalyzer(), stored=True),
+                page=NUMERIC(stored=True),
+                position=KEYWORD(stored=True))
+
+ix = _index.open_dir("indexdir")
+qp = MultifieldParser(["song_text", "title"], schema=schema)
+
+cfh = Highlighter(fragmenter=ContextFragmenter())
+wfh = Highlighter(fragmenter=WholeFragmenter())
 
 
 @app.route('/', methods=('GET', 'POST'))
@@ -24,58 +36,33 @@ def index():
     return render_template('index.html', form=form)
 
 
+@app.route('/about.html', methods=('GET', 'POST'))
+def about():
+    return render_template('about.html')
+
+
 @app.route('/search', methods=('GET', 'POST'))
 def search():
-    form = SearchForm(request.form)
-    if form.validate_on_submit():
-        return redirect(url_for(
-                            endpoint='search',
-                            song_text=form.search_string.data))
-    args = request.args
-    # TODO:
-    # Handle empty string better
-    # Redirect to resolve multiple
-    # q strings
-    query = " ".join(args.getlist('q')) or "God"
+    query_terms = SearchTerms(request.query_string.decode('utf-8'))
 
-    facet_names = ["meter_name", "page", "position"]
-    filters = {f: args.getlist(f) for f in facet_names}
-    filter_query = get_filter_query(filters)
+    if 'scope' in query_terms:
+        query_terms.handle_scope()
+        return redirect(url_for(endpoint='search') + "?" + str(query_terms))
 
-    songs = Song.query.whooshee_search(query).filter(filter_query)
-
-    facets = {f: Counter(getattr(s, f) for s in songs) for f in facet_names}
-
-    return render_template('search.html', songs=songs, form=form,
-                           query=query, facets=facets, filters=filters,
-                           request=request)
-
-
-def get_filter_query(filters):
-    query_terms = []
-    for f in filters:
-        vs = filters[f]
-        query_terms.append(make_query_term(f, vs))
-    return and_(*query_terms)
-
-
-def make_query_term(k, vs):
-    column = getattr(Song, k)
-    return or_(*[column == v for v in vs])
-
-
-@app.route('/fuck')
-def throw_an_error():
-    # Some tests in test_foo.py currently depend on this. Remove it when we
-    # are doing proper mocking or something
-    assert False
+    facets = ["meter_name", "page", "position"]
+    with ix.searcher() as s:
+        query_terms.clean_with(s)
+        print(repr(query_terms.whoosh_query()))
+        songs = s.search(query_terms.whoosh_query(),
+                         groupedby=facets,
+                         maptype=Count)
+        print(songs)
+        return render_template('search.html', songs=songs, facets=facets,
+                search_terms=query_terms, cfh=cfh, wfh=wfh)
 
 
 @app.errorhandler(500)
 def handle_500(e):
-    # Currently unnecessary because we're not changing the DB in any routes,
-    # but let's have it in there anyway
-    db.session.rollback()
     return render_template('500.html', e=e), 500
 
 

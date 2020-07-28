@@ -1,0 +1,21 @@
+<div class="card my-3">
+    <h4 class="card-header">Filter</h5>
+    <div class="card-body">
+        {% for f in facets %}
+        <p>{{f}}</p>
+        <ul>
+            {% if f in search_terms %}
+            {{ search_terms[f] }}
+            {% for v in search_terms[f] %}  
+            <li><a href="search?{{search_terms.minus(f, v)}}">☑ {{v}}</a></li>
+            {% endfor %}
+            {% else %}
+            {% for v in songs.groups(f) %}
+            <li><a href="search?{{search_terms.plus(f, v)}}">☐ {{v}}</a>
+                <small class="font-weight-lighter">({{ songs.groups(f)[v] }})</small></li>
+            {% endfor %}
+            {% endif %}
+        </ul>
+        {% endfor %}
+    </div>
+</div>

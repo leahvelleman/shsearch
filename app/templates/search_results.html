@@ -1,0 +1,41 @@
+<div class="card border-0">
+    <div class="card-body">
+        {% for s in songs %}
+        <div class="card mb-2">
+            <div class="card-body">
+                <div class="card-title">
+                    <a href=".multi-collapse{{s.page}}{{s.position}}" 
+                                             data-toggle="collapse" 
+                                             class="toggle stretched-link text-decoration-none text-white"
+                                             aria-expanded="false"
+                                             aria-controls="x{{s.page}}{{s.position}}collapse1
+                                                            x{{s.page}}{{s.position}}collapse2"></a><a href="{{request.url}}&amp;page={{s.page}}">{{ s.page}}</a><a href="{{request.url}}&amp;position={{s.position}}">{{ s.position }}</a>
+                    {{ s.title }}
+                    <span class="font-weight-light text-muted mb-2">
+                        {{ s.meter_name }}
+                    </span>
+                </div>
+                <p class="collapse show multi-collapse{{s.page}}{{s.position}}"
+                id="x{{s.page}}{{s.position}}collapse1">
+                {% set short = cfh.highlight_hit(s, "song_text") | safe %}
+                {% if not short %}
+                {% set short = s.song_text.split("\n")[:2] | join("<br>") | safe %}
+                {% endif %}
+                &ldquo;{{ short }}&rdquo;
+                </p>
+                {% set lines = wfh.highlight_hit(s, "song_text").split("\n") %}
+                {% if not lines %}
+                {% set lines = s.song_text.split("\n") %}
+                {% endif %}
+                <div class="collapse multi-collapse{{s.page}}{{s.position}}"
+                    id="x{{s.page}}{{s.position}}collapse2">
+                    {% for line in lines %}
+                    {{line|safe}}<br>
+                    {% endfor %}
+                    {{ s.three_liner }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
