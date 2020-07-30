@@ -43,11 +43,7 @@ def about():
 
 @app.route('/search', methods=('GET', 'POST'))
 def search():
-    query_terms = SearchTerms(request.query_string.decode('utf-8'))
-
-    if 'scope' in query_terms:
-        query_terms.handle_scope()
-        return redirect(url_for(endpoint='search') + "?" + str(query_terms))
+    query_terms = SearchTerms.from_query_string(request.query_string.decode('utf-8'))
 
     facets = ["meter_name", "page", "position"]
     with ix.searcher() as s:
