@@ -65,21 +65,22 @@
                             <option value="all">All fields</option>
                             <option value="song_text">Lyrics</option>
                             <option value="title">Titles</option>
+                            <option value="meter_name">Meters</option>
                         </select>
                     </div>
                 </div>
             </form>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+{% if category == "bad_keyword" %}
+<div class="help-inline">{{ message }}</div>
+{% else %}
+{{ message }}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endwith %}
         </div>
     </div>
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<div class="well">
-{% for message in messages %}
-    <div class="controls">
-        <span class="help-inline">{{ message }}</span>
-    </div>
-{% endfor %}
-</div>
-{% endif %}
-{% endwith %}

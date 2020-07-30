@@ -1,5 +1,6 @@
 from collections import defaultdict
 from copy import deepcopy
+from flask import flash
 from urllib.parse import parse_qs, urlencode
 from whoosh.analysis import RegexTokenizer, LowercaseFilter, StopFilter
 from whoosh.fields import Schema, TEXT, KEYWORD
@@ -14,14 +15,12 @@ schema = Schema(title=TEXT(analyzer=text_analyzer, stored=True),
                 page=TEXT(stored=True),
                 position=KEYWORD(stored=True))
 
-
 qp = SimpleParser("song_text", schema=schema)
 
 
 class SearchTerms(defaultdict):
 
     disjunctive = {"meter_name", "position"}
-    limited = {"meter_name", "position"}
     everywhere = {"title", "song_text", "meter_name"}
 
     def __init__(self, **kwargs):
@@ -35,15 +34,18 @@ class SearchTerms(defaultdict):
     def copy(self):
         return SearchTerms(**self)
 
-
-    def clean_with(self, s):
+    def clean_bad_keywords(self, s):
         # TODO: For text search fields, cull stopwords
-        for k, vals in self.items():
-            if k in self.limited:
-                lexicon = list(s.field_terms(k))
+        for fieldname, vals in list(self.items()):
+            if type(schema[fieldname]) is KEYWORD:
+                lexicon = list(s.field_terms(fieldname))
                 for v in list(vals):
                     if v not in lexicon:
-                        self[k].discard(v)
+                        flash("no such {} as {}".format(fieldname, v), 'bad_keyword')
+                        self[fieldname].discard(v)
+                if not self[fieldname]:
+                    self.pop(fieldname)
+                        
 
     def plus(self, fieldname, value):
         obj = self.copy()
@@ -66,7 +68,8 @@ class SearchTerms(defaultdict):
                 value = terms['q']
                 if scope == 'all':
                     # Handling items like "birdseye" will happen here
-                    field = schema['song_text']  # Use the song text field's token parser
+                    # Use the song text field's token parser
+                    field = schema['song_text']
                     tokens = field.process_text(" ".join(value))
                 elif type(schema[scope]) is TEXT:
                     field = schema[scope]

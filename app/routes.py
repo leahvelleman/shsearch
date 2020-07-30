@@ -47,7 +47,7 @@ def search():
 
     facets = ["meter_name", "page", "position"]
     with ix.searcher() as s:
-        query_terms.clean_with(s)
+        query_terms.clean_bad_keywords(s)
         print(repr(query_terms.whoosh_query()))
         songs = s.search(query_terms.whoosh_query(),
                          groupedby=facets,
