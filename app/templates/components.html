@@ -1,6 +1,27 @@
 {% macro present_term(search_terms, term, value, hidden_input=False) -%}
-<a href="search?{{search_terms.minus(term, value)}}">☑ {{value | title}}</a>
+<a href="search?{{search_terms.minus(term, value)}}">☑ {{value}}</a>
 {% if hidden_input %}
 <input type="hidden" id="{{term}}" name="{{term}}" value="{{value}}">
 {% endif %}
 {%- endmacro %}
+
+
+{% macro facet_term(search_terms, songs, f, v, label=None) %}
+{% if label is none %}
+{% set label = v %}
+{% endif %}
+{% if f in search_terms %}
+{% if v in search_terms[f] %}
+<a href="search?{{search_terms.minus(f, v)}}">☑ {{label}}</a>
+{% else %}
+<a href="search?{{search_terms.plus(f, v)}}">☐ {{label}}</a>
+{% endif %}
+{% else %}
+{% if v not in songs.groups(f) %}
+<span class="text-secondary">☐ {{label}}</a>
+{% else %}
+<a href="search?{{search_terms.plus(f, v)}}">☐ {{label}}</a>
+<small class="font-weight-lighter">({{ songs.groups(f)[v] }})</small></li>
+{% endif %}
+{% endif %}
+{% endmacro %}
