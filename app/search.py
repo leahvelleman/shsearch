@@ -1,18 +1,21 @@
 from collections import defaultdict
+from copy import deepcopy
 from urllib.parse import parse_qs, urlencode
-from whoosh.analysis import StemmingAnalyzer
-from whoosh.fields import Schema, TEXT, KEYWORD, NUMERIC
-from whoosh.highlight import Highlighter, WholeFragmenter, ContextFragmenter
-from whoosh.qparser import MultifieldParser
+from whoosh.analysis import RegexTokenizer, LowercaseFilter, StopFilter
+from whoosh.fields import Schema, TEXT, KEYWORD
 from whoosh.query import Term, Or, And, Every
-from whoosh.sorting import Count
-from whoosh import index as _index
+from whoosh.qparser import SimpleParser
 
-schema = Schema(title=TEXT(stored=True),
+text_analyzer = RegexTokenizer() | LowercaseFilter() | StopFilter()
+
+schema = Schema(title=TEXT(analyzer=text_analyzer, stored=True),
+                song_text=TEXT(analyzer=text_analyzer, stored=True),
                 meter_name=KEYWORD(commas=True, stored=True),
-                song_text=TEXT(analyzer=StemmingAnalyzer(), stored=True),
                 page=TEXT(stored=True),
                 position=KEYWORD(stored=True))
+
+
+qp = SimpleParser("song_text", schema=schema)
 
 
 class SearchTerms(defaultdict):
@@ -20,24 +23,35 @@ class SearchTerms(defaultdict):
     disjunctive = {"meter_name", "position"}
     limited = {"meter_name", "position"}
 
-    def __init__(self, query_string=None):
+    def __init__(self, **kwargs):
         super(SearchTerms, self).__init__(set)
-        if query_string:
-            items = parse_qs(query_string).items()
-            for key, value in items:
-                self[key].update(value)
+        for k, v in kwargs.items():
+            self[k] = set(v)
 
     def __repr__(self):
+        print(self.items())
         return urlencode(self, doseq=True)
 
-    def handle_scope(self):
-        # TODO: Make this feel less of a hack?
-        if 'scope' in self and 'q' in self:
-            k = self['scope'].pop()
-            v = self['q']
-            self[k].update(v)
-            self['scope'] = set()
-            self['q'] = set()
+    def copy(self):
+        return SearchTerms(**self)
+
+    @classmethod
+    def from_query_string(cls, query_string):
+        obj = cls()
+        if query_string:
+            terms = parse_qs(query_string)
+            print(terms)
+            if 'q' in terms:
+                scope = terms.get('scope')[0] or 'song_text'
+                query_obj = qp.parse(" ".join(terms['q']))
+                for token in query_obj.all_tokens():
+                    obj[scope].add(token.text)
+                terms.pop('q')
+                terms.pop('scope')
+            print(terms)
+            for fieldname, value in terms.items():
+                obj[fieldname].update(value)
+        return obj
 
     def clean_with(self, s):
         # TODO: For text search fields, cull stopwords
@@ -48,14 +62,14 @@ class SearchTerms(defaultdict):
                     if v not in lexicon:
                         self[k].discard(v)
 
-    def plus(self, k, v):
-        obj = SearchTerms(self.__repr__())
-        obj[k].add(v)
+    def plus(self, fieldname, value):
+        obj = self.copy()
+        obj[fieldname].add(value)
         return obj
 
-    def minus(self, k, v):
-        obj = SearchTerms(self.__repr__())
-        obj[k].discard(v)
+    def minus(self, fieldname, value):
+        obj = self.copy()
+        obj[fieldname].discard(value)
         return obj
 
     def whoosh_query(self):
