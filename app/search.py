@@ -22,6 +22,7 @@ class SearchTerms(defaultdict):
 
     disjunctive = {"meter_name", "position"}
     limited = {"meter_name", "position"}
+    everywhere = {"title", "song_text", "meter_name"}
 
     def __init__(self, **kwargs):
         super(SearchTerms, self).__init__(set)
@@ -29,29 +30,11 @@ class SearchTerms(defaultdict):
             self[k] = set(v)
 
     def __repr__(self):
-        print(self.items())
         return urlencode(self, doseq=True)
 
     def copy(self):
         return SearchTerms(**self)
 
-    @classmethod
-    def from_query_string(cls, query_string):
-        obj = cls()
-        if query_string:
-            terms = parse_qs(query_string)
-            print(terms)
-            if 'q' in terms:
-                scope = terms.get('scope')[0] or 'song_text'
-                query_obj = qp.parse(" ".join(terms['q']))
-                for token in query_obj.all_tokens():
-                    obj[scope].add(token.text)
-                terms.pop('q')
-                terms.pop('scope')
-            print(terms)
-            for fieldname, value in terms.items():
-                obj[fieldname].update(value)
-        return obj
 
     def clean_with(self, s):
         # TODO: For text search fields, cull stopwords
@@ -72,11 +55,43 @@ class SearchTerms(defaultdict):
         obj[fieldname].discard(value)
         return obj
 
+    @classmethod
+    def from_query_string(cls, query_string):
+        obj = cls()
+        if query_string:
+            terms = parse_qs(query_string)
+            print(terms)
+            if 'q' in terms:
+                scope = terms.get('scope')[0] or 'all'
+                value = terms['q']
+                if scope == 'all':
+                    # Handling items like "birdseye" will happen here
+                    field = schema['song_text']  # Use the song text field's token parser
+                    tokens = field.process_text(" ".join(value))
+                elif type(schema[scope]) is TEXT:
+                    field = schema[scope]
+                    tokens = field.process_text(" ".join(value))
+                else:
+                    tokens = value
+                obj[scope].update(tokens)
+                terms.pop('q')
+                terms.pop('scope')
+            for fieldname, value in terms.items():
+                obj[fieldname].update(value)
+                print(obj)
+        return obj
+
     def whoosh_query(self):
         queries = [Every()]  # An empty query gets everything
         for k in self:
             if self[k]:
-                if k in self.disjunctive:
+                if k == 'all':
+                    terms = []
+                    for v in self[k]:
+                        for subk in self.everywhere:
+                            terms.append(Term(subk, v))
+                    queries.append(Or(terms))
+                elif k in self.disjunctive:
                     queries.append(Or([Term(k, v) for v in self[k]]))
                 else:
                     queries.append(And([Term(k, v) for v in self[k]]))
