@@ -1,27 +1,15 @@
 from collections import defaultdict
-from copy import deepcopy
 from flask import flash
 from urllib.parse import parse_qs, urlencode
-from whoosh.analysis import RegexTokenizer, LowercaseFilter, StopFilter
-from whoosh.fields import Schema, TEXT, KEYWORD
-from whoosh.query import Term, Or, And, Every
-from whoosh.qparser import SimpleParser
-
-text_analyzer = RegexTokenizer() | LowercaseFilter() | StopFilter()
-
-schema = Schema(title=TEXT(analyzer=text_analyzer, stored=True),
-                song_text=TEXT(analyzer=text_analyzer, stored=True),
-                meter_name=KEYWORD(commas=True, stored=True),
-                page=TEXT(stored=True),
-                position=KEYWORD(stored=True))
-
-qp = SimpleParser("song_text", schema=schema)
+from whoosh.fields import KEYWORD
+from whoosh.query import Term, Or, And, Every, Phrase
+from .schema import schema, CREATOR, FULLTEXT
 
 
 class SearchTerms(defaultdict):
 
     disjunctive = {"meter_name", "position"}
-    everywhere = {"title", "song_text", "meter_name"}
+    everywhere = {"title", "song_text", "meter_name", "composer"}
 
     def __init__(self, **kwargs):
         super(SearchTerms, self).__init__(set)
@@ -33,19 +21,6 @@ class SearchTerms(defaultdict):
 
     def copy(self):
         return SearchTerms(**self)
-
-    def clean_bad_keywords(self, s):
-        # TODO: For text search fields, cull stopwords
-        for fieldname, vals in list(self.items()):
-            if type(schema[fieldname]) is KEYWORD:
-                lexicon = list(s.field_terms(fieldname))
-                for v in list(vals):
-                    if v not in lexicon:
-                        flash("no such {} as {}".format(fieldname, v), 'bad_keyword')
-                        self[fieldname].discard(v)
-                if not self[fieldname]:
-                    self.pop(fieldname)
-                        
 
     def plus(self, fieldname, value):
         obj = self.copy()
@@ -62,26 +37,27 @@ class SearchTerms(defaultdict):
         obj = cls()
         if query_string:
             terms = parse_qs(query_string)
-            print(terms)
             if 'q' in terms:
                 scope = terms.get('scope')[0] or 'all'
                 value = terms['q']
                 if scope == 'all':
                     # Handling items like "birdseye" will happen here
-                    # Use the song text field's token parser
+                    # Also, we use the song text field's token parser
                     field = schema['song_text']
                     tokens = field.process_text(" ".join(value))
-                elif type(schema[scope]) is TEXT:
+                elif type(schema[scope]) is FULLTEXT:
                     field = schema[scope]
                     tokens = field.process_text(" ".join(value))
                 else:
+                    # do not stopword or tokenize, because we will store it as
+                    # a phrase
                     tokens = value
                 obj[scope].update(tokens)
                 terms.pop('q')
                 terms.pop('scope')
+                print(terms)
             for fieldname, value in terms.items():
                 obj[fieldname].update(value)
-                print(obj)
         return obj
 
     def whoosh_query(self):
@@ -94,11 +70,12 @@ class SearchTerms(defaultdict):
                         for subk in self.everywhere:
                             terms.append(Term(subk, v))
                     queries.append(Or(terms))
+                elif k == 'composer':
+                    queries.append(And([Phrase(k, v.split(" ")) for v in self[k]]))
+                    print(queries)
                 elif k in self.disjunctive:
                     queries.append(Or([Term(k, v) for v in self[k]]))
                 else:
                     queries.append(And([Term(k, v) for v in self[k]]))
         query = And(queries)
         return query
-
-

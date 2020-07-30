@@ -3,16 +3,24 @@
 <div class="card border-0 ">
     <div class="card-body">
         <div class="card-title h6">
-            <a href=".multi-collapse{{s.page}}{{s.position}}" 
-                                     data-toggle="collapse" 
-                                     class="toggle stretched-link text-decoration-none text-white"
-                                     aria-expanded="false"
-                                     aria-controls="x{{s.page}}{{s.position}}collapse1
-                                                     x{{s.page}}{{s.position}}collapse2"></a>
-            <a href="#">{{ s.page }}{{ s.position }} {{ s.title }}</a>
-            <span class="font-weight-light text-muted">
-                {{ s.meter_name }}
-            </span>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a href=".multi-collapse{{s.page}}{{s.position}}" 
+                                             data-toggle="collapse" 
+                                             class="toggle stretched-link text-decoration-none text-white"
+                                             aria-expanded="false"
+                                             aria-controls="x{{s.page}}{{s.position}}collapse1
+                                                             x{{s.page}}{{s.position}}collapse2"></a>
+                    <a href="#">{{ s.page }}{{ s.position }} {{ s.title }}</a>
+                </li>
+                <li class="font-weight-light text-muted list-inline-item mt-1">
+                    {{ s.meter_name }}
+                </li>
+            <ul class="list-inline">
+                <li class="font-weight-light text-muted list-inline-item mt-1">
+                    {{ s.composer }} {{ s.composition_year }}
+                </li>
+            </ul>
         </div>
         <div class="collapse show multi-collapse{{s.page}}{{s.position}}"
         id="x{{s.page}}{{s.position}}collapse1">
