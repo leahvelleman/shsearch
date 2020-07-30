@@ -1,3 +1,4 @@
+{% from 'components.html' import present_term %}
     <div class="card my-3 {% if search_terms %} {% else %} border-0 {% endif %}">
         {% if search_terms %}
         <div class="card-header">
@@ -22,8 +23,7 @@
                 <div class="col-md-9">
                     {% for value in search_terms[term] %}
                     {{ or() }}
-                    <a href="search?{{search_terms.minus(term, value)}}">☑ {{value}}</a>
-                    <input type="hidden" id="{{term}}" name="{{term}}" value="{{value}}">
+                    {{ present_term(search_terms, term, value, hidden_input=True) }}
                     {% endfor %}
                 </div>
             </div>
@@ -33,8 +33,7 @@
                 <div class="col-md-9">
                     {% for value in search_terms[term] %}
                     <div class="row">
-                    <a href="search?{{search_terms.minus(term, value)}}">☑ {{value}}</a>
-                    <input type="hidden" id="{{term}}" name="{{term}}" value="{{value}}">
+                    {{ present_term(search_terms, term, value, hidden_input=True) }}
                     </div>
                     {% endfor %}
                 </div>

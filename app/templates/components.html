@@ -1,0 +1,6 @@
+{% macro present_term(search_terms, term, value, hidden_input=False) -%}
+<a href="search?{{search_terms.minus(term, value)}}">☑ {{value | title}}</a>
+{% if hidden_input %}
+<input type="hidden" id="{{term}}" name="{{term}}" value="{{value}}">
+{% endif %}
+{%- endmacro %}
