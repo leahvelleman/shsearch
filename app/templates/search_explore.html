@@ -2,59 +2,151 @@
 <div class="card my-3">
     <h5 class="card-header">Filter</h5>
     <div class="card-body">
-        <h6>Page position</h6>
-        <div class="row no-gutters">
-            <div class="col">
-                {{ facet_term(search_terms, songs, 'position', 't', 'Top') }}
+        <div class="form-group row">
+            <label class="col-sm-3 h6">Page</label>
+            <input 
+                id="ex2"
+                type="text"
+                class="col-sm-9"
+                name="somename"
+                data-provide="slider"
+                data-slider-value="[26,500]"
+                data-slider-min="26"
+                data-slider-max="500"
+                data-slider-step="1"
+                data-slider-tooltip="show">
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 h6">Length</label>
+            <input 
+                id="ex2"
+                type="text"
+                class="col-sm-9"
+                name="somename"
+                data-provide="slider"
+                data-slider-step="0.5"
+                data-slider-value="[0.5,3]"
+                data-slider-ticks="[0.5,1,1.5,2,3]"
+                data-slider-ticks-snap-bounds="0.5"
+                data-slider-tooltip="show">
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 h6">Top</label>
+            <input 
+                style="width: 3rem;"
+                id="ex2"
+                type="text"
+                name="somename"
+                data-provide="slider"
+                data-slider-step="1"
+                data-slider-value="2"
+                data-slider-ticks="[1,2,3]"
+                data-slider-tooltip="show">
+            <label class="col-sm-3 h6">Bottom</label>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 h6">Left</label>
+            <input 
+                style="width: 3rem;"
+                id="ex2"
+                type="text"
+                name="somename"
+                data-provide="slider"
+                data-slider-step="1"
+                data-slider-value="2"
+                data-slider-ticks="[1,2,3]"
+                data-slider-tooltip="show">
+            <label class="col-sm-3 h6">Right</label>
+        </div>
+        <h6 class="mt-3">Time <span class="font-weight-light">is one of</span></h6>
+            <div class="btn-toolbar">
+                <div class="mr-1">
+                    <button type="button" class="btn btn-sm btn-outline-primary"  data-toggle="button" aria-pressed="false" autocomplete="off">2/2</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary">4/4</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary">2/4</button>
+                    <br>
+                    <span class="small font-weight-light text-secondary">Simple</span>
+                </div>
+                <div class="mr-1">
+                    <button type="button" class="btn btn-sm btn-outline-primary">3/2</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary">3/4</button>
+                    <br>
+                    <span class="small font-weight-light text-secondary">Triple</span>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-sm btn-outline-primary">6/4</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary">6/8</button>
+                    <br>
+                    <span class="small font-weight-light text-secondary">Compound</span>
+                </div>
             </div>
-            <div class="col">
-                {{ facet_term(search_terms, songs, 'position', 'b', 'Bottom') }}
+            <a href="#"> ☐ Time changes</a>
+            <h6 class="mt-3">Meter <span class="font-weight-light">is one of</span></h6>
+        <div class="btn-toolbar" role="toolbar">
+            <div class="btn-group mr-2">
+                <button class="btn btn-sm btn-outline-primary">Common</button>
+                <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="sr-only">SCREEN READER DETAILS HERE</span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="#">Common Meter</a>
+                    <a class="dropdown-item" href="#">Common Meter Double</a>
+                    <a class="dropdown-item" href="#">Common Meter Half</a>
+                    <a class="dropdown-item" href="#">Common Particular Meter</a>
+                    <a class="dropdown-item" href="#">Common Meter + 6,8</a>
+                </div>
             </div>
-            <div class="col">
-                {{ facet_term(search_terms, songs, 'position', '', 'Whole') }}
+            <div class="btn-group mr-2">
+                <button class="btn btn-sm btn-outline-primary">Short</button>
+                <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="sr-only">SCREEN READER DETAILS HERE</span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="#">Short Meter</a>
+                    <a class="dropdown-item" href="#">Short Meter Double</a>
+                    <a class="dropdown-item" href="#">Short Particular Meter</a>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-sm btn-outline-primary">Long</button>
+                <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="sr-only">SCREEN READER DETAILS HERE</span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="#">Long Meter</a>
+                    <a class="dropdown-item" href="#">Long Meter Double</a>
+                    <a class="dropdown-item" href="#">Long Meter Half</a>
+                    <a class="dropdown-item" href="#">Long Particular Meter</a>
+                </div>
             </div>
         </div>
-        <h6 class="mt-3">Meter</h6>
-        <div class="row no-gutters">
-            <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', 'Common Meter', 'CM') }}
+        <div class="btn-toolbar mt-2" role="toolbar">
+            <div class="btn-group mr-2">
+                <button class="btn btn-sm btn-outline-primary">Numbered</button>
+                <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="sr-only">SCREEN READER DETAILS HERE</span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="#">6s</a>
+                    <a class="dropdown-item" href="#">6s,4s</a>
+                    <a class="dropdown-item" href="#">6s,7s</a>
+                    <a class="dropdown-item" href="#">6s,7s Double</a>
+                    <a class="dropdown-item" href="#">6s,10s</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">7s</a>
+                    <a class="dropdown-item" href="#">7s Double</a>
+                    <a class="dropdown-item" href="#">7s,6s</a>
+                    <a class="dropdown-item" href="#">7s,6s Double</a>
+                </div>
             </div>
-            <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', 'Common Meter Double', 'CMD') }}
-            </div>
-            <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', 'Common Particular Meter', 'CPM') }}
-            </div>
+            <button class="btn btn-sm btn-outline-primary mr-2">Particular</button>
+            <button class="btn btn-sm btn-outline-primary">Prose</button>
         </div>
-        <div class="row no-gutters">
-            <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', 'Short Meter', 'SM') }} 
-            </div>
-            <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', 'Short Meter Double', 'SMD') }}
-            </div>
-            <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', 'Short Particular Meter', 'SPM') }}
-            </div>
-        </div>
-        <div class="row no-gutters">
-            <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', 'Long Meter', 'LM') }} 
-            </div>
-            <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', 'Long Meter Double', 'LMD') }}
-            </div>
-            <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', 'Long Particular Meter', 'LPM') }}
-            </div>
-        </div>
-        <div class="row no-gutters">
-            <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', '8s,7s') }} 
-            </div>
-            <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', '8s,7s double') }}
-            </div>
-        </div>
+        <h6 class="mt-3">Features</h6>
+        <ul class="list-unstyled">
+            <li><a href="#"> ☐ Fugue</a></li>
+            <li><a href="#"> ☐ &#119056; Birdseye </a></li>
+            <li><a href="#"> ☐ &#119049; Dal Segno</a></li>
+
     </div>
 </div>
