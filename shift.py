@@ -16,8 +16,10 @@ qp = MultifieldParser(["song_text", "title"], schema=schema)
 
 source = sqlite3.connect("../shsearch-parsing/songs.db").cursor()
 
+keys = set()
+
 for row in source.execute("SELECT * FROM SONGS;"):
-    print(row)
+    print(list(zip(row, range(len(row)))))
     kwargs = {}
     kwargs['page'], kwargs['position'] = \
         re.match('([0-9]+)([tb]|$)', row[1]).group(1, 2)
@@ -27,5 +29,7 @@ for row in source.execute("SELECT * FROM SONGS;"):
     kwargs['song_text'] = row[6]
     kwargs['composer'] = row[8] + " " + row[9]
     kwargs['composition_year'] = row[10]
+    keys.add(row[26])
     writer.add_document(**kwargs)
 writer.commit()
+print(sorted([k for k in keys if "min" not in k]))

@@ -50,7 +50,11 @@ class SearchTerms(defaultdict):
                     tokens = field.process_text(" ".join(value))
                 else:
                     # do not stopword or tokenize, because we will store it as
-                    # a phrase
+                    # a phrase. this isn't quite right, though, because we do
+                    # want to be lowercasing here, and possibly doing
+                    # normalizing of other kinds. perhaps the right way to do
+                    # this would be to put it through the appropriate field's
+                    # process_text but then smush it back together
                     tokens = value
                 obj[scope].update(tokens)
                 terms.pop('q')

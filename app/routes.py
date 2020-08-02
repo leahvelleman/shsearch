@@ -37,11 +37,9 @@ def search():
 
     facets = ["meter_name", "page", "position"]
     with ix.searcher() as s:
-        print(repr(query_terms.whoosh_query()))
         songs = s.search(query_terms.whoosh_query(),
                          groupedby=facets,
                          maptype=Count)
-        print(songs)
         return render_template('search.html',
                                songs=songs,
                                facets=facets,
