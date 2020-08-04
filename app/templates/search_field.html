@@ -18,7 +18,7 @@
             {% for term in arguments %}
             {% if term in ['meter_name', 'position'] %}
             <div class="row ml-3 mt-2 no-gutters">
-                <div class="col-md-3">{{ term }}</div>
+                <div class="col-md-3">{{ term | title }}</div>
                 {% set or = joiner("or") %}
                 <div class="col-md-9">
                     {% for value in arguments[term] -%}
@@ -29,7 +29,7 @@
             </div>
             {% else %}
             <div class="row ml-3 mt-2 no-gutters">
-                <div class="col-md-3">{{ term }}</div>
+                <div class="col-md-3">{{ term | title }}</div>
                 <div class="col-md-9">
                     {% for value in arguments[term] %}
                     {{ present_term(arguments, term, value, hidden_input=True) }}
