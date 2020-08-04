@@ -1,6 +1,6 @@
 {% from 'components.html' import present_term %}
-    <div class="card my-3 {% if search_terms %} {% else %} border-0 {% endif %}">
-        {% if search_terms %}
+    <div class="card my-3 {% if arguments %} {% else %} border-0 {% endif %}">
+        {% if arguments %}
         <div class="card-header">
             <span class="h5">Your search</span>
         </div>
@@ -11,37 +11,36 @@
         {% endif %}
         <div class="card-body">
             <form action="/search" method="get" name="search">
-            {% if search_terms %}
+            {% if arguments %}
             Searching within…
             <a href="search"
                 class="float-right btn btn-outline-danger btn-sm">Clear</a>
-            {% for term in search_terms %}
-            {% if term in search_terms.disjunctive %}
-            <div class="row ml-3 mt-2">
+            {% for term in arguments %}
+            {% if term in ['meter_name', 'position'] %}
+            <div class="row ml-3 mt-2 no-gutters">
                 <div class="col-md-3">{{ term }}</div>
-                {% set or = joiner(" or ") %}
+                {% set or = joiner("or") %}
                 <div class="col-md-9">
-                    {% for value in search_terms[term] %}
+                    {% for value in arguments[term] -%}
                     {{ or() }}
-                    {{ present_term(search_terms, term, value, hidden_input=True) }}
+                    {{ present_term(arguments, term, value, hidden_input=True) }}
                     {% endfor %}
                 </div>
             </div>
             {% else %}
-            <div class="row ml-3 mt-2">
+            <div class="row ml-3 mt-2 no-gutters">
                 <div class="col-md-3">{{ term }}</div>
                 <div class="col-md-9">
-                    {% for value in search_terms[term] %}
-                    <div class="row">
-                    {{ present_term(search_terms, term, value, hidden_input=True) }}
-                    </div>
+                    {% for value in arguments[term] %}
+                    {{ present_term(arguments, term, value, hidden_input=True) }}
+                    <br>
                     {% endfor %}
                 </div>
             </div>
             {% endif %}
-            {% endfor %}
+            {% endfor %} 
             {% endif %}
-                <div class="input-group">
+                <div class="input-group mt-2">
                     <div class="input-group-prepend">
                         <button type="submit" 
                                 class="btn btn-primary" 
@@ -53,7 +52,7 @@
                            id="q" 
                            name="q" 
                            class="form-control"
-                           placeholder="{% if search_terms -%}
+                           placeholder="{% if arguments -%}
                                         Search within these results for...
                                         {%- else -%}
                                         Search all 554 songs for...

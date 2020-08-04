@@ -5,55 +5,55 @@
         <h6>Page position</h6>
         <div class="row no-gutters">
             <div class="col">
-                {{ facet_term(search_terms, songs, 'position', 't', 'Top') }}
+                {{ facet_term(arguments, songs, 'position', 't', 'Top') }}
             </div>
             <div class="col">
-                {{ facet_term(search_terms, songs, 'position', 'b', 'Bottom') }}
+                {{ facet_term(arguments, songs, 'position', 'b', 'Bottom') }}
             </div>
             <div class="col">
-                {{ facet_term(search_terms, songs, 'position', '', 'Whole') }}
+                {{ facet_term(arguments, songs, 'position', '', 'Whole') }}
             </div>
         </div>
         <h6 class="mt-3">Meter</h6>
         <div class="row no-gutters">
             <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', 'Common Meter', 'CM') }}
+                {{ facet_term(arguments, songs, 'meter_name', 'Common Meter', 'CM') }}
             </div>
             <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', 'Common Meter Double', 'CMD') }}
+                {{ facet_term(arguments, songs, 'meter_name', 'Common Meter Double', 'CMD') }}
             </div>
             <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', 'Common Particular Meter', 'CPM') }}
-            </div>
-        </div>
-        <div class="row no-gutters">
-            <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', 'Short Meter', 'SM') }} 
-            </div>
-            <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', 'Short Meter Double', 'SMD') }}
-            </div>
-            <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', 'Short Particular Meter', 'SPM') }}
+                {{ facet_term(arguments, songs, 'meter_name', 'Common Particular Meter', 'CPM') }}
             </div>
         </div>
         <div class="row no-gutters">
             <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', 'Long Meter', 'LM') }} 
+                {{ facet_term(arguments, songs, 'meter_name', 'Short Meter', 'SM') }} 
             </div>
             <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', 'Long Meter Double', 'LMD') }}
+                {{ facet_term(arguments, songs, 'meter_name', 'Short Meter Double', 'SMD') }}
             </div>
             <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', 'Long Particular Meter', 'LPM') }}
+                {{ facet_term(arguments, songs, 'meter_name', 'Short Particular Meter', 'SPM') }}
             </div>
         </div>
         <div class="row no-gutters">
             <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', '8s,7s') }} 
+                {{ facet_term(arguments, songs, 'meter_name', 'Long Meter', 'LM') }} 
             </div>
             <div class="col">
-                {{ facet_term(search_terms, songs, 'meter_name', '8s,7s double') }}
+                {{ facet_term(arguments, songs, 'meter_name', 'Long Meter Double', 'LMD') }}
+            </div>
+            <div class="col">
+                {{ facet_term(arguments, songs, 'meter_name', 'Long Particular Meter', 'LPM') }}
+            </div>
+        </div>
+        <div class="row no-gutters">
+            <div class="col">
+                {{ facet_term(arguments, songs, 'meter_name', '8s,7s') }} 
+            </div>
+            <div class="col">
+                {{ facet_term(arguments, songs, 'meter_name', '8s,7s double') }}
             </div>
         </div>
     </div>

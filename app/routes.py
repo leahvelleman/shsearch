@@ -1,10 +1,10 @@
 from flask import render_template, redirect, request, url_for
 from app import app
 from .forms import SearchForm
-from .search import SearchTerms
-
+from .schema import schema, CREATOR, FULLTEXT
 from whoosh.highlight import Highlighter, WholeFragmenter, ContextFragmenter
 from whoosh.sorting import Count
+from whoosh.query import Term, Or, And, Every, Phrase
 from whoosh import index as _index
 
 
@@ -32,19 +32,79 @@ def about():
 
 @app.route('/search', methods=('GET', 'POST'))
 def search():
-    query_terms = SearchTerms.from_query_string(
-            request.query_string.decode('utf-8'))
+    arguments = request.args.to_dict(flat=False)
 
     facets = ["meter_name", "page", "position"]
+    everywhere = ["title", "song_text", "meter_name", "composer"]
+    queries = [Every()]
+    if 'q' in arguments:
+        scope = arguments.pop('scope')[0] or 'all'
+        value = arguments.pop('q')
+        if scope == 'all':
+            field = schema['song_text']
+            tokens = field.process_text(" ".join(value))
+        elif type(schema[scope]) is FULLTEXT:
+            field = schema[scope]
+            tokens = field.process_text(" ".join(value))
+        else:
+            # do not stopword or tokenize, because we will store it as
+            # a phrase. this isn't quite right, though, because we do
+            # want to be lowercasing here, and possibly doing
+            # normalizing of other kinds. perhaps the right way to do
+            # this would be to put it through the appropriate field's
+            # process_text but then smush it back together
+            tokens = value
+        if scope in arguments:
+            arguments[scope] += tokens
+        else:
+            arguments[scope] = list(tokens)
+        return redirect(url_for('search', **arguments))
+
+    for keyword in arguments:
+        if arguments[keyword]:
+            if keyword == "all":
+                terms = []
+                for value in arguments[keyword]:
+                    for subkeyword in everywhere:
+                        terms.append(Term(subkeyword, value))
+                # TODO: This is the wrong logic, because it makes all-fields
+                # search terms optional.
+                queries.append(Or(terms))
+            else:
+                terms = [Term(keyword, value) for value in arguments[keyword]]
+                if type(schema[keyword]) is FULLTEXT:
+                    queries.append(And(terms))
+                else:
+                    queries.append(Or(terms))
+    query = And(queries)
+
     with ix.searcher() as s:
-        songs = s.search(query_terms.whoosh_query(),
-                         groupedby=facets,
-                         maptype=Count)
+        songs = s.search(query, groupedby=facets, maptype=Count)
         return render_template('search.html',
                                songs=songs,
                                facets=facets,
-                               search_terms=query_terms,
+                               arguments=arguments,
                                cfh=cfh, wfh=wfh)
+
+
+def extend(dictionary, key, value):
+    output = {k: [v for v in vs] for k, vs in dictionary.items()}
+    if key in output:
+        output[key].append(value)
+    else:
+        output[key] = [value]
+    return output
+
+
+def shrink(dictionary, key, value):
+    output = {k: [v for v in vs] for k, vs in dictionary.items()}
+    if key in output:
+        output[key].remove(value)
+    return output
+
+
+app.jinja_env.globals.update(extend=extend)
+app.jinja_env.globals.update(shrink=shrink)
 
 
 @app.errorhandler(500)
