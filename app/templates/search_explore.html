@@ -4,11 +4,19 @@
     <div class="card-body">
         {% for facet in facets %}
         <h6>{{ facet | replace('_', ' ') | capitalize }}</h6>
+        {% if facet in arguments %}
+        <ul class="list-unstyled">
+            {% for value in everything.groups(facet) | select | sort %}
+            <li>{{ facet_term(arguments, songs, facet, value) }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
         <ul class="list-unstyled">
             {% for value in songs.groups(facet) | select | sort %}
             <li>{{ facet_term(arguments, songs, facet, value) }}</li>
             {% endfor %}
         </ul>
+        {% endif %}
         {% endfor %}
     </div>
 </div>

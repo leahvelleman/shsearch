@@ -80,8 +80,10 @@ def search():
 
     with ix.searcher() as s:
         songs = s.search(query, groupedby=facets, maptype=Count)
+        everything = s.search(Every(), groupedby=facets)
         return render_template('search.html',
                                songs=songs,
+                               everything=everything,
                                facets=facets,
                                arguments=arguments,
                                cfh=cfh, wfh=wfh)
