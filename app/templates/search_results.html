@@ -20,7 +20,8 @@
                                              aria-expanded="false"
                                              aria-controls="x{{s.page}}{{s.position}}collapse1
                                                              x{{s.page}}{{s.position}}collapse2"></a>
-                    <a href="#">{{ s.page }}{{ s.position }} {{ s.title }}</a>
+                    <a href="#">{{ s.page }}{{ wfh.highlight_hit(s, "position") | default(s.position, true) | safe }} 
+                                {{ wfh.highlight_hit(s, "title") | default(s.title, true) | safe }}</a>
                 </li>
                 <li class="text-muted list-inline-item mt-1">
                     {{ s.meter }}
@@ -29,16 +30,16 @@
         </div>
         <div>
             <ul class="list-inline">
-                <li class="text-muted list-inline-item mt-1">
-                    &#9835;{{ wfh.highlight_hit(s, "composition_string") | default(s.composition_string, true) | default("[none]", true) | safe }}
+                <li class="text-muted list-inline-item mt-1 font-weight-light">
+                    &#9835;{{ wfh.highlight_hit(s, "composition_string") | default(s.composition_string, true) | default("<i>Anonymous</i>", true) | safe }}
                 </li>
-                <li class="text-muted list-inline-item mt-1">
-                    &#9998;{{ wfh.highlight_hit(s, "poetry_string") | default(s.poetry_string, true) | default("[none]", true) | safe }}
+                <li class="text-muted list-inline-item mt-1 font-weight-light">
+                    &#9998;{{ wfh.highlight_hit(s, "poetry_string") | default(s.poetry_string, true) | default("<i>Anonymous</i>", true) | safe }}
                 </li>
-                <li class="text-muted list-inline-item mt-1">
+                <li class="text-muted list-inline-item mt-1 font-weight-light">
                     {{ s.key }} 
                 </li>
-                <li class="text-muted list-inline-item mt-1">
+                <li class="text-muted list-inline-item mt-1 font-weight-light">
                     {{ s.time }} 
                 </li>
             </ul>
