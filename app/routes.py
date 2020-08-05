@@ -9,7 +9,7 @@ from whoosh.query import Term, Or, And, Every, Phrase
 from whoosh import index as _index
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-indexdir = os.path.join(THIS_FOLDER, 'indexdir')
+indexdir = os.path.join(THIS_FOLDER, '../indexdir')
 
 ix = _index.open_dir(indexdir)
 
