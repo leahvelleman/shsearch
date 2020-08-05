@@ -1,5 +1,5 @@
 {% macro present_term(arguments, f, v, hidden_input=False) -%}
-<a href="{{ url_for('search', **shrink(arguments, f, v)) }}">☑ {{ v | title }}</a>
+<a href="{{ url_for('search', **shrink(arguments, f, v)) }}">☑ {{ v | capitalize }}</a>
 {% if hidden_input %}
 <input type="hidden" id="{{ f }}" name="{{ f }}" value="{{ v }}">
 {% endif %}
@@ -12,15 +12,15 @@
 {% endif %}
 {% if f in arguments %}
 {% if v in arguments[f] %}
-<a href="{{ url_for('search', **shrink(arguments, f, v)) }}">☑ {{label | title}}</a>
+<a href="{{ url_for('search', **shrink(arguments, f, v)) }}">☑ {{label | capitalize}}</a>
 {% else %}
-<a href="{{ url_for('search', **extend(arguments, f, v)) }}">☐ {{label | title}}</a>
+<a href="{{ url_for('search', **extend(arguments, f, v)) }}">☐ {{label | capitalize}}</a>
 {% endif %}
 {% else %}
 {% if v not in songs.groups(f) %}
 <span class="text-secondary">☐ {{label}}</a>
 {% else %}
-<a href="{{ url_for('search', **extend(arguments, f, v)) }}">☐ {{label}}</a>
+<a href="{{ url_for('search', **extend(arguments, f, v)) }}">☐ {{label | capitalize}}</a>
 <small class="font-weight-lighter">({{ songs.groups(f)[v] }})</small></li>
 {% endif %}
 {% endif %}

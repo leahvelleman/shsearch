@@ -37,7 +37,7 @@ for row, nextrow in zip(rows, rows[1:]):
 
     kwargs['title'] = row[2]
     # ordinal = row[3]
-    kwargs['meter'] = row[4]
+    kwargs['meter'] = row[4].replace(',', '.')
     kwargs['lyrics'] = row[6]
     kwargs['composer'] = row[8] + " " + row[9]
     kwargs['composition_year'] = row[10]
@@ -54,6 +54,7 @@ for row, nextrow in zip(rows, rows[1:]):
         kwargs['poetry_year'] += "," + row[22]
     kwargs['poetry_book'] = row[24]
     kwargs['key'] = row[26]
+    kwargs['multiple_keys'] = ("," in kwargs['key'])
     kwargs['time'] = row[27]
     kwargs['composition_string'] = row[30]
     kwargs['poetry_string'] = row[31]

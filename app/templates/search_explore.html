@@ -3,7 +3,7 @@
     <h5 class="card-header">Filter</h5>
     <div class="card-body">
         {% for facet in facets %}
-        <h6>{{ facet }}</h6>
+        <h6>{{ facet | replace('_', ' ') | capitalize }}</h6>
         <ul class="list-unstyled">
             {% for value in songs.groups(facet) | select | sort %}
             <li>{{ facet_term(arguments, songs, facet, value) }}</li>

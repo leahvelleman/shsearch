@@ -1,6 +1,6 @@
 import re
 from whoosh.analysis import RegexTokenizer, LowercaseFilter, StopFilter, IDTokenizer
-from whoosh.fields import Schema, TEXT, KEYWORD
+from whoosh.fields import Schema, TEXT, KEYWORD, BOOLEAN
 from whoosh.util.text import rcompile
 
 text_analyzer = RegexTokenizer() | LowercaseFilter() | StopFilter()
@@ -32,5 +32,6 @@ schema = Schema(title=FULLTEXT(),
                 poetry_year=KEYWORD(stored=True),
                 poetry_book=KEYWORD(stored=True),
                 poetry_string=FULLTEXT(),
-                key=KEYWORD(stored=True),
-                time=KEYWORD(stored=True))
+                key=KEYWORD(commas=True, stored=True),
+                multiple_keys=BOOLEAN(),
+                time=KEYWORD(commas=True, stored=True))
