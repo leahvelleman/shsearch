@@ -1,3 +1,4 @@
+import os
 from flask import render_template, redirect, request, url_for
 from app import app
 from .forms import SearchForm
@@ -7,8 +8,10 @@ from whoosh.sorting import Count
 from whoosh.query import Term, Or, And, Every, Phrase
 from whoosh import index as _index
 
+THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+indexdir = os.path.join(THIS_FOLDER, 'indexdir')
 
-ix = _index.open_dir("indexdir")
+ix = _index.open_dir(indexdir)
 
 cfh = Highlighter(fragmenter=ContextFragmenter())
 wfh = Highlighter(fragmenter=WholeFragmenter())
