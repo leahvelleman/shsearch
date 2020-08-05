@@ -17,10 +17,20 @@ class FULLTEXT(TEXT):
     def __init__(self):
         super().__init__(analyzer=text_analyzer, stored=True)
 
+
 schema = Schema(title=FULLTEXT(),
-                song_text=FULLTEXT(),
-                meter_name=KEYWORD(commas=True, stored=True),
+                lyrics=FULLTEXT(),
+                meter=KEYWORD(commas=True, stored=True),
                 page=TEXT(stored=True),
+                length=TEXT(),
                 position=KEYWORD(stored=True),
                 composer=CREATOR(),
-                composition_year=KEYWORD(stored=True))
+                composition_year=KEYWORD(stored=True),
+                composition_book=KEYWORD(stored=True),
+                composition_string=FULLTEXT(),
+                poet=CREATOR(),
+                poetry_year=KEYWORD(stored=True),
+                poetry_book=KEYWORD(stored=True),
+                poetry_string=FULLTEXT(),
+                key=KEYWORD(stored=True),
+                time=KEYWORD(stored=True))

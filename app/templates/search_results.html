@@ -22,26 +22,38 @@
                                                              x{{s.page}}{{s.position}}collapse2"></a>
                     <a href="#">{{ s.page }}{{ s.position }} {{ s.title }}</a>
                 </li>
-                <li class="font-weight-light text-muted list-inline-item mt-1">
-                    {{ s.meter_name }}
+                <li class="text-muted list-inline-item mt-1">
+                    {{ s.meter }}
                 </li>
+            </ul>
+        </div>
+        <div>
             <ul class="list-inline">
-                <li class="font-weight-light text-muted list-inline-item mt-1">
-                    {{ s.composer }} {{ s.composition_year }}
+                <li class="text-muted list-inline-item mt-1">
+                    &#9835;{{ wfh.highlight_hit(s, "composition_string") | default(s.composition_string, true) | default("[none]", true) | safe }}
+                </li>
+                <li class="text-muted list-inline-item mt-1">
+                    &#9998;{{ wfh.highlight_hit(s, "poetry_string") | default(s.poetry_string, true) | default("[none]", true) | safe }}
+                </li>
+                <li class="text-muted list-inline-item mt-1">
+                    {{ s.key }} 
+                </li>
+                <li class="text-muted list-inline-item mt-1">
+                    {{ s.time }} 
                 </li>
             </ul>
         </div>
         <div class="collapse show multi-collapse{{s.page}}{{s.position}}"
         id="x{{s.page}}{{s.position}}collapse1">
-        {% set short = cfh.highlight_hit(s, "song_text") | safe %}
+        {% set short = cfh.highlight_hit(s, "lyrics") | safe %}
         {% if not short %}
-        {% set short = s.song_text.split("\n")[:2] | join("<br>") | safe %}
+        {% set short = s.lyrics.split("\n")[:2] | join("<br>") | safe %}
         {% endif %}
         &ldquo;{{ short }}&rdquo;
         </div>
-        {% set lines = wfh.highlight_hit(s, "song_text").split("\n") %}
+        {% set lines = wfh.highlight_hit(s, "lyrics").split("\n") %}
         {% if not lines %}
-        {% set lines = s.song_text.split("\n") %}
+        {% set lines = s.lyrics.split("\n") %}
         {% endif %}
         <div class="collapse multi-collapse{{s.page}}{{s.position}}"
             id="x{{s.page}}{{s.position}}collapse2">

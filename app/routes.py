@@ -34,14 +34,14 @@ def about():
 def search():
     arguments = request.args.to_dict(flat=False)
 
-    facets = ["meter_name", "page", "position"]
-    everywhere = ["title", "song_text", "meter_name", "composer"]
+    facets = ["meter", "page", "position"]
+    everywhere = ["title", "lyrics", "composition_string", "poetry_string"]
     queries = [Every()]
     if 'q' in arguments:
         scope = arguments.pop('scope')[0] or 'all'
         value = arguments.pop('q')
         if scope == 'all':
-            field = schema['song_text']
+            field = schema['lyrics']
             tokens = field.process_text(" ".join(value))
         elif type(schema[scope]) is FULLTEXT:
             field = schema[scope]
