@@ -34,7 +34,7 @@ def about():
 def search():
     arguments = request.args.to_dict(flat=False)
 
-    facets = ["meter", "page", "position"]
+    facets = ["position", "meter", "key", "time"]
     everywhere = ["title", "lyrics", "composition_string", "poetry_string"]
     queries = [Every()]
     if 'q' in arguments:

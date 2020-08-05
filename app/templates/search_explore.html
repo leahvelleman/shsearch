@@ -2,59 +2,13 @@
 <div class="card my-3">
     <h5 class="card-header">Filter</h5>
     <div class="card-body">
-        <h6>Page position</h6>
-        <div class="row no-gutters">
-            <div class="col">
-                {{ facet_term(arguments, songs, 'position', 't', 'Top') }}
-            </div>
-            <div class="col">
-                {{ facet_term(arguments, songs, 'position', 'b', 'Bottom') }}
-            </div>
-            <div class="col">
-                {{ facet_term(arguments, songs, 'position', '', 'Whole') }}
-            </div>
-        </div>
-        <h6 class="mt-3">Meter</h6>
-        <div class="row no-gutters">
-            <div class="col">
-                {{ facet_term(arguments, songs, 'meter', 'Common Meter', 'CM') }}
-            </div>
-            <div class="col">
-                {{ facet_term(arguments, songs, 'meter', 'Common Meter Double', 'CMD') }}
-            </div>
-            <div class="col">
-                {{ facet_term(arguments, songs, 'meter', 'Common Particular Meter', 'CPM') }}
-            </div>
-        </div>
-        <div class="row no-gutters">
-            <div class="col">
-                {{ facet_term(arguments, songs, 'meter', 'Short Meter', 'SM') }} 
-            </div>
-            <div class="col">
-                {{ facet_term(arguments, songs, 'meter', 'Short Meter Double', 'SMD') }}
-            </div>
-            <div class="col">
-                {{ facet_term(arguments, songs, 'meter', 'Short Particular Meter', 'SPM') }}
-            </div>
-        </div>
-        <div class="row no-gutters">
-            <div class="col">
-                {{ facet_term(arguments, songs, 'meter', 'Long Meter', 'LM') }} 
-            </div>
-            <div class="col">
-                {{ facet_term(arguments, songs, 'meter', 'Long Meter Double', 'LMD') }}
-            </div>
-            <div class="col">
-                {{ facet_term(arguments, songs, 'meter', 'Long Particular Meter', 'LPM') }}
-            </div>
-        </div>
-        <div class="row no-gutters">
-            <div class="col">
-                {{ facet_term(arguments, songs, 'meter', '8s,7s') }} 
-            </div>
-            <div class="col">
-                {{ facet_term(arguments, songs, 'meter', '8s,7s double') }}
-            </div>
-        </div>
+        {% for facet in facets %}
+        <h6>{{ facet }}</h6>
+        <ul class="list-unstyled">
+            {% for value in songs.groups(facet) | select | sort %}
+            <li>{{ facet_term(arguments, songs, facet, value) }}</li>
+            {% endfor %}
+        </ul>
+        {% endfor %}
     </div>
 </div>
