@@ -23,12 +23,12 @@
                     <a href="#">{{ s.page }}{{ wfh.highlight_hit(s, "position") | default(s.position, true) | safe }} 
                                 {{ wfh.highlight_hit(s, "title") | default(s.title, true) | safe }}</a>
                 </li>
-                <li class="text-muted list-inline-item mt-1">
+                <li class="text-muted list-inline-item mt-1 font-weight-light">
                     {{ s.meter }}
                 </li>
             </ul>
         </div>
-        <div>
+        <div class="mt-0">
             <ul class="list-inline">
                 <li class="text-muted list-inline-item mt-1 font-weight-light">
                     &#9835;{{ wfh.highlight_hit(s, "composition_string") | default(s.composition_string, true) | default("<i>Anonymous</i>", true) | safe }}
@@ -46,7 +46,7 @@
         </div>
         <div class="collapse show multi-collapse{{s.page}}{{s.position}}"
         id="x{{s.page}}{{s.position}}collapse1">
-        {% set short = cfh.highlight_hit(s, "lyrics") | safe %}
+        {% set short = cfh.highlight_hit(s, "lyrics").split("\n") | select | join("<br>") | safe %}
         {% if not short %}
         {% set short = s.lyrics.split("\n")[:2] | join("<br>") | safe %}
         {% endif %}

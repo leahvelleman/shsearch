@@ -17,12 +17,7 @@ wfh = Highlighter(fragmenter=WholeFragmenter())
 @app.route('/', methods=('GET', 'POST'))
 @app.route('/index.html', methods=('GET', 'POST'))
 def index():
-    form = SearchForm(request.form)
-    if form.validate_on_submit():
-        return redirect(url_for(
-                            endpoint='search',
-                            song_text=form.search_string.data))
-    return render_template('index.html', form=form)
+    return redirect(url_for(endpoint='search'))
 
 
 @app.route('/about.html', methods=('GET', 'POST'))
