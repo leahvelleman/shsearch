@@ -46,7 +46,7 @@
         </div>
         <div class="collapse show multi-collapse{{s.page}}{{s.position}}"
         id="x{{s.page}}{{s.position}}collapse1">
-        {% set short = cfh.highlight_hit(s, "lyrics").split("\n") | select | join("<br>") | safe %}
+        {% set short = cfh.highlight_hit(s, "lyrics").split("\n") | join("<br>") | safe %}
         {% if not short %}
         {% set short = s.lyrics.split("\n")[:2] | join("<br>") | safe %}
         {% endif %}
