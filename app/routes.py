@@ -134,11 +134,11 @@ def search():
             if keyword == "all":
                 terms = []
                 for value in arguments[keyword]:
+                    subterms = []
                     for subkeyword in everywhere:
-                        terms.append(Term(subkeyword, value))
-                # TODO: This is the wrong logic, because it makes all-fields
-                # search terms optional.
-                queries.append(Or(terms))
+                        subterms.append(Term(subkeyword, value))
+                    terms.append(Or(subterms))
+                queries.append(And(terms))
             else:
                 terms = [Term(keyword, value) for value in arguments[keyword]]
                 if type(schema[keyword]) is FULLTEXT:
