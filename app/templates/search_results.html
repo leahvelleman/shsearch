@@ -52,16 +52,10 @@
         {% endif %}
         &ldquo;{{ short }}&rdquo;
         </div>
-        {% set lines = wfh.highlight_hit(s, "lyrics").split("\n") %}
-        {% if not lines %}
-        {% set lines = s.lyrics.split("\n") %}
-        {% endif %}
+        {% set lines = wfh.highlight_hit(s, "lyrics", minscore=0).split("\n") | join("<br>") | safe %}
         <div class="collapse multi-collapse{{s.page}}{{s.position}}"
             id="x{{s.page}}{{s.position}}collapse2">
-            {% for line in lines %}
-            {{line|safe}}<br>
-            {% endfor %}
-            {{ s.three_liner }}
+            &ldquo;{{ lines }}&rdquo;
         </div>
     </div>
 </div>
