@@ -40,7 +40,7 @@
                     {{ s.key }} 
                 </li>
                 <li class="text-muted list-inline-item mt-1 font-weight-light">
-                    {{ s.time }} 
+                    {{ pinpoint.highlight_hit(s, "tenor") | safe }}
                 </li>
             </ul>
         </div>

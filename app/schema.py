@@ -1,11 +1,9 @@
-import re
-from whoosh.analysis import RegexTokenizer, LowercaseFilter, StopFilter, IDTokenizer
+from whoosh.analysis import RegexTokenizer, LowercaseFilter, StopFilter
 from whoosh.fields import Schema, TEXT, KEYWORD, BOOLEAN
-from whoosh.util.text import rcompile
-
-text_analyzer = RegexTokenizer() | LowercaseFilter() | StopFilter()
 
 creator_analyzer = RegexTokenizer() | LowercaseFilter()
+text_analyzer = RegexTokenizer() | LowercaseFilter() | StopFilter()
+music_analyzer = RegexTokenizer() | LowercaseFilter()
 
 
 class CREATOR(TEXT):
@@ -18,12 +16,16 @@ class FULLTEXT(TEXT):
         super().__init__(analyzer=text_analyzer, stored=True)
 
 
+class MUSIC(TEXT):
+    def __init__(self):
+        super().__init__(analyzer=music_analyzer, phrase=True, chars=True, stored=True)
+
+
 schema = Schema(title=FULLTEXT(),
                 lyrics=FULLTEXT(),
-                meter=KEYWORD(commas=True, stored=True),
                 page=TEXT(stored=True),
-                length=TEXT(),
                 position=KEYWORD(stored=True),
+                length=TEXT(),
                 composer=CREATOR(),
                 composition_year=KEYWORD(stored=True),
                 composition_book=KEYWORD(stored=True),
@@ -34,4 +36,9 @@ schema = Schema(title=FULLTEXT(),
                 poetry_string=FULLTEXT(),
                 key=KEYWORD(commas=True, stored=True),
                 multiple_keys=BOOLEAN(),
-                time=KEYWORD(commas=True, stored=True))
+                time=KEYWORD(commas=True, stored=True),
+                meter=KEYWORD(commas=True, stored=True),
+                treble=MUSIC(),
+                alto=MUSIC(),
+                tenor=MUSIC(),
+                bass=MUSIC())

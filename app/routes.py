@@ -2,7 +2,7 @@ import os
 from flask import render_template, redirect, request, url_for
 from app import app
 from .forms import SearchForm
-from .schema import schema, CREATOR, FULLTEXT
+from .schema import schema, FULLTEXT, MUSIC
 from whoosh.highlight import Highlighter, Fragmenter, WholeFragmenter, DEFAULT_CHARLIMIT, mkfrag, HtmlFormatter
 from whoosh.sorting import Count
 from whoosh.query import Term, Or, And, Every, Phrase
@@ -140,10 +140,17 @@ def search():
                     terms.append(Or(subterms))
                 queries.append(And(terms))
             else:
-                terms = [Term(keyword, value) for value in arguments[keyword]]
                 if type(schema[keyword]) is FULLTEXT:
+                    terms = [Term(keyword, value)
+                             for value in arguments[keyword]]
+                    queries.append(And(terms))
+                elif type(schema[keyword]) is MUSIC:
+                    terms = [Phrase(keyword, value.split(" "))
+                             for value in arguments[keyword]]
                     queries.append(And(terms))
                 else:
+                    terms = [Term(keyword, value)
+                             for value in arguments[keyword]]
                     queries.append(Or(terms))
     query = And(queries)
 

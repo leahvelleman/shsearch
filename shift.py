@@ -1,10 +1,11 @@
 import re
-import os
 import os.path
 import sqlite3
+from mido import MidiFile
 from whoosh.qparser import MultifieldParser
 import whoosh.index as index
 from app.schema import schema
+scale = ['fa', 'fi', 'so', 'si', 'la', 'fa', 'fi', 'so', 'si', 'la', 'may', 'mi']
 
 
 if not os.path.exists("indexdir"):
@@ -29,6 +30,28 @@ for row, nextrow in zip(rows, rows[1:]):
 
     kwargs['page'] = page
     kwargs['position'] = position
+
+    midi_file_name = "../shsearch-midi/{}{}.mid".format(page, position)
+    syllables = {1: [], 2: [], 3: [], 4: []}
+    if os.path.exists(midi_file_name):
+        midi_data = {1: [], 2: [], 3: [], 4: []}
+        mid = MidiFile(midi_file_name)
+        for i, track in enumerate(mid.tracks):
+            for msg in track:
+                if msg.type == 'note_on':
+                    midi_data[i].append(msg.note)
+        if midi_data[4]:
+            tonic = midi_data[4][-1]
+        else:
+            tonic = midi_data[3][-1]
+        for i in midi_data:
+            for note in midi_data[i]:
+                syllables[i].append(scale[(note - tonic) % 12])
+
+    kwargs['treble'] = " ".join(syllables[1])
+    kwargs['alto'] = " ".join(syllables[2])
+    kwargs['tenor'] = " ".join(syllables[3])
+    kwargs['bass'] = " ".join(syllables[4])
 
     pageno = int(page) + (0.5 if position == "b" else 0)
     nextpageno = int(nextpage) + (0.5 if nextposition == "b" else 0)
@@ -58,8 +81,5 @@ for row, nextrow in zip(rows, rows[1:]):
     kwargs['time'] = row[27]
     kwargs['composition_string'] = row[30]
     kwargs['poetry_string'] = row[31]
-    if kwargs['composer'] and kwargs['composition_book']:
-        print(list(zip(row, range(len(row)))))
-        print(kwargs)
     writer.add_document(**kwargs)
 writer.commit()
